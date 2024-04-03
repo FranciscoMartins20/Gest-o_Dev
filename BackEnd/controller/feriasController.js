@@ -1,5 +1,6 @@
 const { executeQuery } = require('../db');
 
+
 const adicionarFerias = async (req, res) => {
     const { CC, dataInicio, dataFim } = req.body;
 

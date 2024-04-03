@@ -13,4 +13,8 @@ router.post('/login', function(req, res) {
     usersController.fazerLogin(req, res);
 });
 
+router.post('/logout', usersController.logout);
+
+
+
 module.exports = router;

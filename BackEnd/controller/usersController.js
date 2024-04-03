@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { executeQuery } = require('../db');
 
@@ -46,10 +47,7 @@ const fazerLogin = async (req, res) => {
             throw new Error('CC ou senha não fornecidos');
         }
 
-        const query = `
-            SELECT * FROM users WHERE CC = '${CC}'
-        `;
-
+        const query = `SELECT * FROM users WHERE CC = '${CC}'`;
         const users = await executeQuery(query);
 
         if (users.length === 0) {
@@ -60,7 +58,16 @@ const fazerLogin = async (req, res) => {
         const passwordMatch = await bcrypt.compare(Password, user.PasswordHash);
 
         if (passwordMatch) {
-            res.send('Login bem-sucedido!');
+            const token = jwt.sign({ CC: user.CC }, 'secreto', { expiresIn: '1h' });
+
+            
+            res.cookie('jwtToken', token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'strict'
+            });
+
+            res.status(200).send('Login bem-sucedido!');
         } else {
             throw new Error('Senha incorreta');
         }
@@ -70,7 +77,13 @@ const fazerLogin = async (req, res) => {
     }
 };
 
+const logout = (req, res) => {
+    res.clearCookie('jwtToken');
+    res.status(200).send('Logout realizado com sucesso.');
+};
+
 module.exports = {
     registrarUtilizador,
-    fazerLogin
+    fazerLogin,
+    logout
 };
