@@ -7,9 +7,10 @@ import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
+import { logoutUser } from "../../service/api"
 
 
-const Item = ({ title, icon, selected, setSelected, to , onClick }) => {
+const Item = ({ title, icon, selected, setSelected, to, onClick }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -126,7 +127,7 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
-        
+
 
             <Typography
               variant="h6"
@@ -135,14 +136,15 @@ const Sidebar = () => {
             >
               Charts
             </Typography>
-      
-      
+
+
             <Item
               title="Logout"
               icon={<MapOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-              to ="/logout"
+              onClick={logoutUser} // Assuming Item supports an onClick prop
+              to="/logout" // This might be unnecessary if you're handling the routing in logoutUser
             />
           </Box>
         </Menu>

@@ -22,4 +22,28 @@ export const loginUser = async (CC, Password) => {
     }
   };
   
+  export const logoutUser = async () => {
+    try {
+      // Retrieve the token from local storage
+      const token = localStorage.getItem('token');
+      
+      // If there's a token, send a request to the logout endpoint
+      if (token) {
+        await axios.post(`${API_URL}/logout`, {}, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+  
+        // After logging out, remove the token from local storage
+        localStorage.removeItem('token');
+  
+        // Optional: Redirect the user or perform other cleanup actions
+        // window.location.href = '/login';
+      }
+    } catch (error) {
+      console.error('Error during logout:', error.response ? error.response.data : error.message);
+      // Handle error (show message, redirect, etc.)
+    }
+  };
   
