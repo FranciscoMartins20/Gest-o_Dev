@@ -23,6 +23,26 @@ const adicionarFerias = async (req, res) => {
     }
 };
 
-module.exports = {
-    adicionarFerias
+const obterTodasFerias = async (req, res) => {
+    try {
+        
+        const query = 'SELECT * FROM ferias';
+
+      
+        const resultado = await executeQuery(query);
+
+       
+        res.status(200).json(resultado);
+    } catch (error) {
+    o
+        console.error('Erro ao obter férias:', error);
+        res.status(500).send('Erro ao obter férias');
+    }
 };
+
+module.exports = {
+    adicionarFerias,
+    obterTodasFerias 
+};
+
+

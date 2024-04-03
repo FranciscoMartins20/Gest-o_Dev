@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 
 const verificarToken = (req, res, next) => {
-
     const token = req.cookies.jwtToken;
     console.log(token);
 
@@ -13,10 +12,21 @@ const verificarToken = (req, res, next) => {
         if (err) {
             return res.status(401).send('Token inválido');
         }
-        // Armazenando o CC do usuário no objeto req para uso posterior nas rotas protegidas
-        req.CC = decoded.CC;
-        next(); // Passa o controle para a próxima função de middleware na pilha
+        req.decoded = decoded;
+        next();
     });
 };
 
-module.exports = verificarToken;
+// Middleware genérico para verificar role
+const verificarRole = (rolesPermitidas) => (req, res, next) => {
+    if (!req.decoded || !rolesPermitidas.includes(req.decoded.Role)) {
+        return res.status(403).send('Acesso negado');
+    }
+    next();
+};
+
+
+module.exports = {
+    verificarToken,
+    verificarRole
+}

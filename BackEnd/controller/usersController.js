@@ -58,9 +58,9 @@ const fazerLogin = async (req, res) => {
         const passwordMatch = await bcrypt.compare(Password, user.PasswordHash);
 
         if (passwordMatch) {
-            const token = jwt.sign({ CC: user.CC }, 'secreto', { expiresIn: '1h' });
+            const token = jwt.sign({ CC: user.CC, Role: user.Role }, 'secreto', { expiresIn: '1h' });
 
-            
+
             res.cookie('jwtToken', token, {
                 httpOnly: true,
                 secure: true,
