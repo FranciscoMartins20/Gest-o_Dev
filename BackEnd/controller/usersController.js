@@ -47,6 +47,7 @@ const fazerLogin = async (req, res) => {
             throw new Error('CC ou senha não fornecidos');
         }
 
+        // Supõe-se que executeQuery é uma função definida em outro lugar para executar consultas SQL
         const query = `SELECT * FROM users WHERE CC = '${CC}'`;
         const users = await executeQuery(query);
 
@@ -58,16 +59,11 @@ const fazerLogin = async (req, res) => {
         const passwordMatch = await bcrypt.compare(Password, user.PasswordHash);
 
         if (passwordMatch) {
+            // Supõe-se que "secreto" é a sua chave secreta para o JWT. Isso deve ser mantido seguro e, em produção, fora do código
             const token = jwt.sign({ CC: user.CC, Role: user.Role }, 'secreto', { expiresIn: '1h' });
 
-
-            res.cookie('jwtToken', token, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'strict'
-            });
-
-            res.status(200).send('Login bem-sucedido!');
+            // Retorna o token diretamente na resposta ao invés de definir um cookie
+            res.status(200).json({ token: token, message: 'Login bem-sucedido!' });
         } else {
             throw new Error('Senha incorreta');
         }

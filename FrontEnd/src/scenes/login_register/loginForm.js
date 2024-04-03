@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, useTheme } from '@mui/material';
-import { loginUser } from '../../service/api'; // Importe a função loginUser aqui
+import { loginUser } from '../../service/api'; 
 import { useNavigate } from 'react-router-dom';
 
 const LoginForm = ({ onLoginSuccess } ) => {
@@ -8,11 +8,11 @@ const LoginForm = ({ onLoginSuccess } ) => {
   const [CC, setCC] = useState('');
   const [Password, setPassword] = useState('');
   const navigate = useNavigate()
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Converta CC para inteiro antes de enviar para o backend
+        
       const response = await loginUser(parseInt(CC), Password);
       console.log('Usuário logado:', response);
       onLoginSuccess();

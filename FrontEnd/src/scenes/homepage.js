@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Button, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 
 const HomePage = () => {
   const theme = useTheme();
@@ -21,9 +21,6 @@ const HomePage = () => {
       <Typography variant="body1" component="p" textAlign="center">
         Esta é uma homepage simples criada com o tema do Material-UI.
       </Typography>
-      <Button variant="contained" color="primary" sx={{ mt: 2 }}>
-        Iniciar
-      </Button>
     </Box>
   );
 };

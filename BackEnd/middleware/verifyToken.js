@@ -1,7 +1,10 @@
 const jwt = require('jsonwebtoken');
 
 const verificarToken = (req, res, next) => {
-    const token = req.cookies.jwtToken;
+    // Tenta extrair o token do cabeçalho "Authorization"
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Padrão Bearer Token
+
     console.log(token);
 
     if (!token) {
@@ -17,7 +20,7 @@ const verificarToken = (req, res, next) => {
     });
 };
 
-// Middleware genérico para verificar role
+// O middleware verificarRole permanece o mesmo
 const verificarRole = (rolesPermitidas) => (req, res, next) => {
     if (!req.decoded || !rolesPermitidas.includes(req.decoded.Role)) {
         return res.status(403).send('Acesso negado');
@@ -25,8 +28,7 @@ const verificarRole = (rolesPermitidas) => (req, res, next) => {
     next();
 };
 
-
 module.exports = {
     verificarToken,
     verificarRole
-}
+};
