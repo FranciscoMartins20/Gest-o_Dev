@@ -1,14 +1,25 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, useTheme } from '@mui/material';
+import { loginUser } from '../../service/api'; // Importe a função loginUser aqui
+import { useNavigate } from 'react-router-dom';
 
-const LoginForm = () => {
+const LoginForm = ({ onLoginSuccess } ) => {
   const theme = useTheme();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleSubmit = (e) => {
+  const [CC, setCC] = useState('');
+  const [Password, setPassword] = useState('');
+  const navigate = useNavigate()
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ username, password });
+    try {
+      // Converta CC para inteiro antes de enviar para o backend
+      const response = await loginUser(parseInt(CC), Password);
+      console.log('Usuário logado:', response);
+      onLoginSuccess();
+      navigate('/')
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+    }
   };
 
   return (
@@ -32,12 +43,12 @@ const LoginForm = () => {
        Bem-vindo !
       </Typography>
       <TextField
-        label="CC"
+        label="CC" 
         variant="outlined"
         fullWidth
         required
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        value={CC}
+        onChange={(e) => setCC(e.target.value)} 
       />
       <TextField
         label="Password"
@@ -45,11 +56,11 @@ const LoginForm = () => {
         type="password"
         fullWidth
         required
-        value={password}
+        value={Password}
         onChange={(e) => setPassword(e.target.value)}
       />
       <Button type="submit" variant="contained" fullWidth>
-        Sign In
+        Entrar
       </Button>
     </Box>
   );
