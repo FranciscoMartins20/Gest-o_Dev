@@ -47,3 +47,17 @@ export const loginUser = async (CC, Password) => {
     }
   };
   
+
+  // Adicione esta função no api.js
+
+export const fetchTickets = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/ticket/tickets`, {
+   
+    });
+    return response.data; // Retorna os dados diretamente
+  } catch (error) {
+    console.error('Erro ao buscar tickets:', error.response ? error.response.data : error.message);
+    throw error.response ? error.response.data : error;
+  }
+};

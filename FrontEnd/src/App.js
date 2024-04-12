@@ -7,6 +7,7 @@ import HomePage from "./scenes/homepage";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import React, { useState, useEffect } from "react";
+import TicketPage from "./scenes/tickets/ticketpage"
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -28,7 +29,7 @@ function App() {
     localStorage.removeItem("isAuthenticated");
     navigate('/login');
   };
-
+ // Trocar o TicketPage por Homepage (rever o menu)
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -39,7 +40,7 @@ function App() {
             <Topbar setIsSidebar={() => {}} />
             <Routes>
               <Route path="/login" element={<LoginForm onLoginSuccess={handleLoginSuccess} />} />
-              <Route path="/" element={isAuthenticated ? <HomePage /> : <LoginForm onLoginSuccess={handleLoginSuccess} />} />
+              <Route path="/" element={isAuthenticated ? <TicketPage /> : <LoginForm onLoginSuccess={handleLoginSuccess} />} />  
             </Routes>
           </main>
         </div>
