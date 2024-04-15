@@ -11,7 +11,8 @@ const EditTicket = () => {
         empresa: '',
         problema: '',
         resolucao: '',
-        estado: ''
+        estado: '',
+        responsavel :''
     });
 
     useEffect(() => {
@@ -25,7 +26,8 @@ const EditTicket = () => {
                     empresa: data.empresa,
                     problema: data.problema,
                     resolucao: data.resolucao,
-                    estado: data.estado
+                    estado: data.estado,
+                    responsavel:data.responsavel
                 }));
             } catch (error) {
                 console.error('Erro ao buscar o ticket:', error);
@@ -114,12 +116,27 @@ const EditTicket = () => {
                         onChange={handleChange}
                     >
                         <option value="">Selecione</option>
-                        <option value="aberto">Aberto</option>
-                        <option value="em progresso">Em Progresso</option>
-                        <option value="resolvido">Resolvido</option>
+                        <option value="Aberto">Aberto</option>
+                        <option value="Em progresso">Em Progresso</option>
+                        <option value="Resolvido">Resolvido</option>
                     </select>
                 </label>
                 <br />
+                <br />
+                <label>
+                    Responsável:
+                    <select
+                        name="responsavel"
+                        value={ticket.responsavel}
+                        onChange={handleChange}
+                    >
+                        <option value="">Selecione</option>
+                        <option value="Francisco Martins">Francisco Martins</option>
+                        <option value="Clara Gomes">Clara Gomes</option>
+                    </select>
+                </label>
+                <br />
+                <br></br>
                 <button type="submit">Salvar Alterações</button>
             </form>
         </div>

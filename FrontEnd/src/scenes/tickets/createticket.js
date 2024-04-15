@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createTicket } from '../../service/api'; 
+import { createTicket } from '../../service/api';
 
 const CreateTicket = () => {
     const [data, setData] = useState('');
@@ -9,19 +9,25 @@ const CreateTicket = () => {
     const [problema, setProblema] = useState('');
     const [resolucao, setResolucao] = useState('');
     const [estado, setEstado] = useState('');
+    const [responsavel, setResponsavel] = useState('');
     const navigate = useNavigate();
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const ticketData = { data, tempo, empresa, problema, resolucao, estado };
-
+        setIsSubmitting(true);
+        const ticketData = { data, tempo, empresa, problema, resolucao, estado, responsavel };
+    
         try {
-            const result = await createTicket(ticketData); // Envia os dados para a API
+            const result = await createTicket(ticketData);
             console.log('Ticket criado com sucesso:', result);
-            navigate('/ticket'); // Redireciona para a lista de tickets ou página de detalhes
+            navigate('/ticket');
         } catch (error) {
             console.error('Falha ao criar ticket:', error);
+            alert('Falha ao criar ticket: ' + error.message);
         }
+        setIsSubmitting(false);
     };
 
     return (
@@ -75,13 +81,25 @@ const CreateTicket = () => {
                     Estado:
                     <select value={estado} onChange={e => setEstado(e.target.value)}>
                         <option value="">Selecione</option>
-                        <option value="aberto">Aberto</option>
-                        <option value="em progresso">Em Progresso</option>
-                        <option value="resolvido">Resolvido</option>
+                        <option value="Aberto">Aberto</option>
+                        <option value="Em progresso">Em Progresso</option>
+                        <option value="Resolvido">Resolvido</option>
                     </select>
                 </label>
                 <br />
-                <button type="submit">Criar Ticket</button>
+                <br />
+                <label>
+                    Responsável:
+                    <select value={responsavel} onChange={e => setResponsavel(e.target.value)}>
+                        <option value="">Selecione</option>
+                        <option value="Francisco Martins">Francisco Martins</option>
+                        <option value="Clara Gomes">Clara Gomes</option>
+                    </select>
+
+                </label>
+                <br />
+                <br></br>
+               <button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Criando...' : 'Criar Ticket'}</button>
             </form>
         </div>
     );

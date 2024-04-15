@@ -4,8 +4,16 @@ import './ticketpage.css';
 import * as XLSX from 'xlsx';
 import { useNavigate } from 'react-router-dom';
 
+
+// Função para converter uma data ISO para o número serial do Excel
+function isoDateToExcelDate(isoDate) {
+    const date = new Date(isoDate);
+    const excelEpoch = new Date(Date.UTC(1899, 11, 30)); // Excel epoch starts at 30th December 1899
+    const delta = date - excelEpoch; // milliseconds between UTC date and Excel epoch
+    return delta / (24 * 60 * 60 * 1000) + 1; // convert to days + adjustment
+}
+
 const exportToExcel = (tickets, fileName) => {
-    // Definir os cabeçalhos das colunas
     const headers = [
         { header: 'ID', key: 'id', width: 10 },
         { header: 'Data', key: 'data', width: 15 },
@@ -13,37 +21,30 @@ const exportToExcel = (tickets, fileName) => {
         { header: 'Empresa', key: 'empresa', width: 20 },
         { header: 'Problema', key: 'problema', width: 30 },
         { header: 'Resolução', key: 'resolucao', width: 30 },
-        { header: 'Estado', key: 'estado', width: 15 }
+        { header: 'Estado', key: 'estado', width: 15 },
+        { header: 'Responsável', key: 'responsavel', width: 15 }
     ];
 
-    // Converter dados para uma folha de trabalho com cabeçalhos
-    const ws = XLSX.utils.json_to_sheet(tickets, { header: headers.map(col => col.key), skipHeader: true });
+    const ws = XLSX.utils.aoa_to_sheet([headers.map(col => col.header)]); // Inserir cabeçalhos na primeira linha
+    ws['!cols'] = headers.map(col => ({ wch: col.width })); // Configurar a largura das colunas
 
-    // Adicionar os cabeçalhos manualmente e aplicar estilos
-    headers.forEach((col, index) => {
-        const ref = XLSX.utils.encode_col(index) + "1"; // Cria referência da célula, como A1, B1, etc.
-        ws[ref] = {
-            v: col.header, t: 's', s: {
-                font: { bold: true },
-                fill: { fgColor: { rgb: "FFFFAA00" } },
-                border: {
-                    top: { style: "thin", color: { rgb: "000000" } },
-                    left: { style: "thin", color: { rgb: "000000" } },
-                    bottom: { style: "thin", color: { rgb: "000000" } },
-                    right: { style: "thin", color: { rgb: "000000" } }
-                }
+    // Adicionar os dados a partir da segunda linha
+    tickets.forEach((ticket, rowIndex) => {
+        const rowData = headers.map(header => {
+            if (header.key === 'data') {
+                // Converter a data ISO para o formato Excel
+                const excelDate = isoDateToExcelDate(ticket[header.key]);
+                return { v: excelDate, t: 'n', z: 'yyyy-mm-dd' }; // 'n' para número e 'z' para o formato da data
+            } else {
+                return ticket[header.key] || '';
             }
-        };
+        });
+        XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: -1 }); // Adicionar cada linha de dados ao final da planilha
     });
+    ws['!autofilter'] = { ref: 'A1:H1' }; ws['!autofilter'] = { ref: 'A1:H1' };
 
-    // Ajustar a largura das colunas
-    ws['!cols'] = headers.map(col => ({ wch: col.width }));
-
-    // Criar novo workbook e adicionar a worksheet
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Tickets");
-
-    // Escrever o arquivo Excel
     XLSX.writeFile(wb, `${fileName}.xlsx`);
 };
 
@@ -100,6 +101,7 @@ const TicketPage = () => {
                             <th>Problema</th>
                             <th>Resolução</th>
                             <th>Estado</th>
+                            <th>Responsável</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -112,6 +114,7 @@ const TicketPage = () => {
                                 <td>{ticket.problema}</td>
                                 <td>{ticket.resolucao}</td>
                                 <td>{ticket.estado}</td>
+                                <td>{ticket.responsavel}</td>
                             </tr>
                         ))}
                     </tbody>

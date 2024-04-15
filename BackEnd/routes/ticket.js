@@ -21,10 +21,10 @@ router.get('/tickets', async (req, res) => {
 
 // Adicionar um novo ticket
 router.post('/tickets', async (req, res) => {
-    const { data, tempo, empresa, problema, resolucao, estado } = req.body;
+    const { data, tempo, empresa, problema, resolucao, estado, responsavel } = req.body;
     const sql = `
-        INSERT INTO tickets (data, tempo, empresa, problema, resolucao, estado)
-        VALUES ('${data}', '${tempo}', '${empresa}', '${problema}', '${resolucao}', '${estado}')
+        INSERT INTO tickets (data, tempo, empresa, problema, resolucao, estado, responsavel)
+        VALUES ('${data}', '${tempo}', '${empresa}', '${problema}', '${resolucao}', '${estado}', '${responsavel}')
     `;
     try {
         await executeQuery(sql);
@@ -60,13 +60,13 @@ router.get('/tickets/:id', async (req, res) => {
 
 // Atualizar um ticket existente
 router.put('/tickets/:id', async (req, res) => {
-    const { data, tempo, empresa, problema, resolucao } = req.body;
+    const { data, tempo, empresa, problema, resolucao, estado, responsavel } = req.body;
     const { id } = req.params;
     const sql = `
         UPDATE tickets
         SET data = '${data}', tempo = '${tempo}', empresa = '${empresa}',
-            problema = '${problema}', resolucao = '${resolucao}'
-        WHERE id = @id`; // Use @id como placeholder para o parâmetro
+            problema = '${problema}', resolucao = '${resolucao}', estado = '${estado}', responsavel = '${responsavel}'
+        WHERE id = @id`; 
 
     try {
         await executeQuery(sql, { id: id }); // Passa o objeto com o parâmetro id
@@ -76,6 +76,7 @@ router.put('/tickets/:id', async (req, res) => {
         res.status(500).send('Erro ao atualizar o ticket.');
     }
 });
+
 
 
 // Deletar um ticket
