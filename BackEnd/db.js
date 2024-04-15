@@ -11,10 +11,12 @@ const config = {
   }
 };
 
-async function executeQuery(query) {
+async function executeQuery(query, params = {}) {
   try {
     const pool = await sql.connect(config);
-    const result = await pool.query(query);
+    const result = await pool.request()
+      .input('id', sql.Int, params.id) // Se você estiver usando o ID como parâmetro
+      .query(query);
     return result.recordset;
   } catch (error) {
     console.error('Erro ao executar consulta:', error);
@@ -23,6 +25,6 @@ async function executeQuery(query) {
 }
 
 module.exports = {
-  executeQuery
+  config, // Exporta as configurações de conexão
+  executeQuery, // Exporta a função executeQuery
 };
-

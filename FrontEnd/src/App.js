@@ -8,6 +8,9 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import React, { useState, useEffect } from "react";
 import TicketPage from "./scenes/tickets/ticketpage"
+import CreateTicket from "./scenes/tickets/createticket";
+import EditTicket from "./scenes/tickets/editticket"; // Ajuste o caminho conforme necessário
+
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -40,7 +43,10 @@ function App() {
             <Topbar setIsSidebar={() => {}} />
             <Routes>
               <Route path="/login" element={<LoginForm onLoginSuccess={handleLoginSuccess} />} />
-              <Route path="/" element={isAuthenticated ? <TicketPage /> : <LoginForm onLoginSuccess={handleLoginSuccess} />} />  
+              <Route path="/" element={isAuthenticated ? <HomePage /> : <LoginForm onLoginSuccess={handleLoginSuccess} />} />  
+              <Route path="/ticket" element={isAuthenticated ? <TicketPage /> : <LoginForm onLoginSuccess={handleLoginSuccess} />} />
+              <Route path="/create-ticket" element={isAuthenticated ? <CreateTicket /> : <LoginForm onLoginSuccess={handleLoginSuccess} />} />
+              <Route path="/edit-ticket/:ticketId" element={isAuthenticated ? <EditTicket /> : <LoginForm onLoginSuccess={handleLoginSuccess} />} />
             </Routes>
           </main>
         </div>

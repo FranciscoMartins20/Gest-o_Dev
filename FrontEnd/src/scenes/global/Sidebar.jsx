@@ -7,6 +7,7 @@ import { tokens } from "../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
+import BugReportIcon from '@mui/icons-material/BugReport';
 import { logoutUser } from "../../service/api"
 
 
@@ -126,6 +127,14 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+             <Item
+              title="Tickets"
+              to="/ticket"
+              icon={<BugReportIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            
 
 
 
