@@ -34,12 +34,12 @@ const exportToExcel = (tickets, fileName) => {
             if (header.key === 'data') {
                 // Converter a data ISO para o formato Excel
                 const excelDate = isoDateToExcelDate(ticket[header.key]);
-                return { v: excelDate, t: 'n', z: 'yyyy-mm-dd' }; // 'n' para número e 'z' para o formato da data
+                return { v: excelDate, t: 'n', z: 'yyyy-mm-dd' };
             } else {
                 return ticket[header.key] || '';
             }
         });
-        XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: -1 }); // Adicionar cada linha de dados ao final da planilha
+        XLSX.utils.sheet_add_aoa(ws, [rowData], { origin: -1 });
     });
     ws['!autofilter'] = { ref: 'A1:H1' }; ws['!autofilter'] = { ref: 'A1:H1' };
 
@@ -55,18 +55,35 @@ const TicketPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null)
     const navigate = useNavigate();
-
-    // Função para carregar os tickets do servidor utilizando axios
-    const loadTickets = async () => {
-        try {
-            const data = await fetchTickets();
-            setTickets(data);
-            setError(null);
-        } catch (error) {
-            setError('Falha ao buscar tickets: ' + error.message);
-        }
-        setIsLoading(false);
+    const [filters, setFilters] = useState({ empresa: '', data: '' });
+    const clearFilters = () => {
+        setFilters({ empresa: '', data: '' });
     };
+
+    const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        setFilters(prevFilters => ({
+            ...prevFilters,
+            [name]: value
+        }));
+    };
+
+
+// eslint-disable-next-line react-hooks/exhaustive-deps
+const loadTickets = async () => {
+    try {
+        const data = await fetchTickets();
+        const filteredData = data.filter(ticket =>
+            (filters.empresa === '' || ticket.empresa.includes(filters.empresa)) &&
+            (filters.data === '' || ticket.data === filters.data)
+        );
+        setTickets(filteredData);
+        setError(null);
+    } catch (error) {
+        setError('Falha ao buscar tickets: ' + error.message);
+    }
+    setIsLoading(false);
+};
 
     const handleCreateTicket = () => {
         navigate('/create-ticket');  // Atualize para o caminho correto conforme seu roteador
@@ -75,15 +92,33 @@ const TicketPage = () => {
     const handleRowClick = (ticketId) => {
         navigate(`/edit-ticket/${ticketId}`);
     };
-
-    // Carregar os tickets ao montar o componente
+    
     useEffect(() => {
         loadTickets();
-    }, []);
+    }, [filters, loadTickets]); // Dependência de filtros aqui assegura recarga ao mudá-los
+
+ 
 
     return (
         <div>
             <h1>Lista de Tickets</h1>
+            <div>
+    <input
+        type="text"
+        name="empresa"
+        value={filters.empresa}
+        onChange={handleFilterChange}
+        placeholder="Filtrar por Empresa"
+    />
+    <input
+        type="date"
+        name="data"
+        value={filters.data}
+        onChange={handleFilterChange}
+        placeholder="Filtrar por data"
+    />
+    <button onClick={clearFilters}>Limpar Filtros</button>
+    </div>
             <button onClick={() => exportToExcel(tickets, 'Lista_de_Tickets')}>Exportar para Excel</button>
             <button onClick={handleCreateTicket}>Criar Novo Ticket</button>
             {isLoading ? (

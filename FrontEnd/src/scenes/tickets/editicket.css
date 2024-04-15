@@ -1,0 +1,51 @@
+/* EditTicket.css */
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+form {
+    display: grid;
+    grid-gap: 16px;
+    padding: 20px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #444;
+}
+
+input[type="date"],
+input[type="time"],
+input[type="text"],
+textarea,
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Inclui padding na largura total */
+}
+
+textarea {
+    height: 100px; /* Define uma altura fixa para textareas */
+    resize: vertical; /* Permite ao usuário ajustar verticalmente */
+}
+
+
+.error, .loading {
+    color: #cc0000;
+    text-align: center;
+}

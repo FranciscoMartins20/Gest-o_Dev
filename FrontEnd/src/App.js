@@ -32,7 +32,6 @@ function App() {
     localStorage.removeItem("isAuthenticated");
     navigate('/login');
   };
- // Trocar o TicketPage por Homepage (rever o menu)
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>

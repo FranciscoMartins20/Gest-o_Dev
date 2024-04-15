@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { updateTicket, fetchTicketDetails } from '../../service/api'; // Certifique-se de que as funções estão exportadas em api.js
+import "./editicket.css";
+
+
 
 const EditTicket = () => {
     const { ticketId } = useParams();

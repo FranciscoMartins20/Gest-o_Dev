@@ -1,23 +1,36 @@
 /* TicketPage.css */
 .container {
-    margin: 20px;
+    margin: 40px auto;
     font-family: 'Arial', sans-serif;
+    max-width: 1200px; /* Limita a largura máxima do container */
+    box-shadow: 0 0 15px rgba(0,0,0,0.1); /* Adiciona sombra sutil ao container */
+    padding: 20px; /* Espaçamento interno */
+    background: #fff; /* Fundo branco para destaque */
 }
 
 h1 {
     text-align: center;
+    color: #333; /* Cor mais suave para o título */
+    margin-bottom: 20px; /* Espaçamento abaixo do título */
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05); /* Sombra sutil para a tabela */
 }
 
-table, th, td {
-    border: 1px solid black;
-    padding: 8px;
+th, td {
+    border: 1px solid #ddd; /* Bordas mais suaves */
+    padding: 12px 15px; /* Aumenta o espaçamento */
     text-align: left;
+    color: #555; /* Cor suave para o texto */
+}
+
+th {
+    background-color: #f8f8f8; /* Fundo suave para cabeçalhos */
+    font-weight: bold;
 }
 
 /* Carregando e Mensagem de Erro */
@@ -25,12 +38,13 @@ table, th, td {
     text-align: center;
     margin-top: 20px;
     font-size: 16px;
+    color: #666; /* Cor suave para mensagens */
 }
 
-/* Especifica que apenas trs dentro de tbody devem ter hover effect */
+/* Estilos para hover em linhas de tabela, com transição suave */
 tbody tr:hover {
-    cursor: pointer;
-    background-color: #c29d22;
+    background-color: #f0f0f0; /* Cor suave para o hover */
+    cursor:pointer;
 }
 
 tbody tr {
