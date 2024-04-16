@@ -60,9 +60,9 @@ const EditTicket = () => {
     };
 
     return (
-        <div>
-            <h1>Editar Ticket</h1>
-            <form onSubmit={handleSubmit}>
+        <div className="edit-ticket-page">
+            <h1 className="edit-ticket-title">Editar Ticket</h1>
+            <form onSubmit={handleSubmit} className="edit-ticket-form">
                 <label>
                     Data:
                     <input
@@ -72,7 +72,6 @@ const EditTicket = () => {
                         onChange={handleChange}
                     />
                 </label>
-                <br />
                 <label>
                     Tempo:
                     <input
@@ -82,7 +81,6 @@ const EditTicket = () => {
                         onChange={handleChange}
                     />
                 </label>
-                <br />
                 <label>
                     Empresa:
                     <input
@@ -92,7 +90,6 @@ const EditTicket = () => {
                         onChange={handleChange}
                     />
                 </label>
-                <br />
                 <label>
                     Problema:
                     <textarea
@@ -101,7 +98,6 @@ const EditTicket = () => {
                         onChange={handleChange}
                     />
                 </label>
-                <br />
                 <label>
                     Resolução:
                     <textarea
@@ -110,7 +106,6 @@ const EditTicket = () => {
                         onChange={handleChange}
                     />
                 </label>
-                <br />
                 <label>
                     Estado:
                     <select
@@ -118,14 +113,12 @@ const EditTicket = () => {
                         value={ticket.estado || ''}
                         onChange={handleChange}
                     >
-                        <option value="">Selecione</option>
+                  
                         <option value="Aberto">Aberto</option>
                         <option value="Em progresso">Em Progresso</option>
                         <option value="Resolvido">Resolvido</option>
                     </select>
                 </label>
-                <br />
-                <br />
                 <label>
                     Responsável:
                     <select
@@ -133,17 +126,16 @@ const EditTicket = () => {
                         value={ticket.responsavel}
                         onChange={handleChange}
                     >
-                        <option value="">Selecione</option>
+                     
                         <option value="Francisco Martins">Francisco Martins</option>
                         <option value="Clara Gomes">Clara Gomes</option>
                     </select>
                 </label>
-                <br />
-                <br></br>
                 <button type="submit">Salvar Alterações</button>
             </form>
         </div>
     );
+    
 };
 
 export default EditTicket;

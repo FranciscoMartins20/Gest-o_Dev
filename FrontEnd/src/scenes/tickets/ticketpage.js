@@ -158,33 +158,37 @@ const loadTickets = async () => {
  
 
     return (
-        <div>
-            <h1>Lista de Tickets</h1>
-            <div>
-    <input
-        type="text"
-        name="empresa"
-        value={filters.empresa}
-        onChange={handleFilterChange}
-        placeholder="Filtrar por Empresa"
-    />
-    <input
-        type="date"
-        name="data"
-        value={filters.data}
-        onChange={handleFilterChange}
-        placeholder="Filtrar por data"
-    />
-    <button onClick={clearFilters}>Limpar Filtros</button>
-    </div>
-            <button onClick={() => exportToExcel(tickets, 'Lista_de_Tickets')}>Exportar para Excel</button>
-            <button onClick={handleCreateTicket}>Criar Novo Ticket</button>
+        <div className="ticket-page">
+            <h1 className="ticket-title">Lista de Tickets</h1>
+            <div className="filter-container">
+                <input
+                    type="text"
+                    name="empresa"
+                    value={filters.empresa}
+                    onChange={handleFilterChange}
+                    placeholder="Filtrar por Empresa"
+                    className="filter-input filter-empresa"
+                />
+                <input
+                    type="date"
+                    name="data"
+                    value={filters.data}
+                    onChange={handleFilterChange}
+                    placeholder="Filtrar por data"
+                    className="filter-input filter-data"
+                />
+                <button onClick={clearFilters} className="filter-clear-button">Limpar Filtros</button>
+            </div>
+            <div className="actions-container">
+                <button onClick={() => exportToExcel(tickets, 'Lista_de_Tickets')} className="action-button export-button">Exportar para Excel</button>
+                <button onClick={handleCreateTicket} className="action-button create-ticket-button">Criar Novo Ticket</button>
+            </div>
             {isLoading ? (
-                <p>Carregando...</p>
+                <p className="loading-message">Carregando...</p>
             ) : error ? (
-                <p>Erro: {error}</p>
+                <p className="error-message">Erro: {error}</p>
             ) : (
-                <table>
+                <table className="tickets-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -199,7 +203,7 @@ const loadTickets = async () => {
                     </thead>
                     <tbody>
                         {tickets.map(ticket => (
-                            <tr key={ticket.id} onClick={() => handleRowClick(ticket.id)}>
+                            <tr key={ticket.id} onClick={() => handleRowClick(ticket.id)} className="ticket-row">
                                 <td>{ticket.id}</td>
                                 <td>{new Date(ticket.data).toLocaleDateString()}</td>
                                 <td>{ticket.tempo}</td>
@@ -212,11 +216,12 @@ const loadTickets = async () => {
                         ))}
                     </tbody>
                 </table>
-
+    
             )}
-
+    
         </div>
     );
+    
 
 };
 

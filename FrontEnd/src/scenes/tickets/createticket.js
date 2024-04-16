@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createTicket } from '../../service/api';
+import "./createticket.css"
 
 const CreateTicket = () => {
     const [data, setData] = useState('');
@@ -31,7 +32,7 @@ const CreateTicket = () => {
     };
 
     return (
-        <div>
+        <div className="create-ticket-page">
             <h1>Criar Novo Ticket</h1>
             <form onSubmit={handleSubmit}>
                 <label>
@@ -42,7 +43,6 @@ const CreateTicket = () => {
                         onChange={e => setData(e.target.value)}
                     />
                 </label>
-                <br />
                 <label>
                     Tempo:
                     <input
@@ -51,7 +51,6 @@ const CreateTicket = () => {
                         onChange={e => setTempo(e.target.value)}
                     />
                 </label>
-                <br />
                 <label>
                     Empresa:
                     <input
@@ -60,7 +59,6 @@ const CreateTicket = () => {
                         onChange={e => setEmpresa(e.target.value)}
                     />
                 </label>
-                <br />
                 <label>
                     Problema:
                     <textarea
@@ -68,7 +66,6 @@ const CreateTicket = () => {
                         onChange={e => setProblema(e.target.value)}
                     />
                 </label>
-                <br />
                 <label>
                     Resolução:
                     <textarea
@@ -76,33 +73,28 @@ const CreateTicket = () => {
                         onChange={e => setResolucao(e.target.value)}
                     />
                 </label>
-                <br />
                 <label>
                     Estado:
                     <select value={estado} onChange={e => setEstado(e.target.value)}>
-                        <option value="">Selecione</option>
+                     
                         <option value="Aberto">Aberto</option>
                         <option value="Em progresso">Em Progresso</option>
                         <option value="Resolvido">Resolvido</option>
                     </select>
                 </label>
-                <br />
-                <br />
                 <label>
                     Responsável:
                     <select value={responsavel} onChange={e => setResponsavel(e.target.value)}>
-                        <option value="">Selecione</option>
+                        
                         <option value="Francisco Martins">Francisco Martins</option>
                         <option value="Clara Gomes">Clara Gomes</option>
                     </select>
-
                 </label>
-                <br />
-                <br></br>
-               <button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Criando...' : 'Criar Ticket'}</button>
+                <button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Criando...' : 'Criar Ticket'}</button>
             </form>
         </div>
     );
+    
 };
 
 export default CreateTicket;

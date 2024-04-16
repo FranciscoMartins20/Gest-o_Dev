@@ -1,51 +1,68 @@
-/* EditTicket.css */
-.container {
-    max-width: 600px;
-    margin: 50px auto;
+.edit-ticket-page {
+    font-family: 'Arial', sans-serif;
+  
     padding: 20px;
-    background: #fff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     border-radius: 8px;
 }
+   
 
-h1 {
-    text-align: center;
-    color: #333;
+
+.edit-ticket-title {
+    color: #2c3e50;
     margin-bottom: 20px;
 }
 
-form {
-    display: grid;
-    grid-gap: 16px;
+.edit-ticket-form {
+    background-color: #fff;
     padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-label {
+.edit-ticket-form label {
     display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #444;
+    margin-bottom: 10px;
+    color: #333;
 }
 
-input[type="date"],
-input[type="time"],
-input[type="text"],
-textarea,
-select {
+.edit-ticket-form input[type="date"],
+.edit-ticket-form input[type="time"],
+.edit-ticket-form input[type="text"],
+.edit-ticket-form textarea,
+.edit-ticket-form select {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 5px;
+    border: 2px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box; /* Inclui padding na largura total */
+    box-sizing: border-box;
+    display: block;
 }
 
-textarea {
-    height: 100px; /* Define uma altura fixa para textareas */
-    resize: vertical; /* Permite ao usuário ajustar verticalmente */
+.edit-ticket-form input[type="date"]:focus,
+.edit-ticket-form input[type="time"]:focus,
+.edit-ticket-form input[type="text"]:focus,
+.edit-ticket-form textarea:focus,
+.edit-ticket-form select:focus {
+    border-color: #2980b9;
+    outline: none;
 }
 
+.edit-ticket-form button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
 
-.error, .loading {
-    color: #cc0000;
-    text-align: center;
+.edit-ticket-form button:hover {
+    background-color: #0056b3;
+
 }
