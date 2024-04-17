@@ -1,25 +1,25 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const useLogout = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const logout = () => {
-    try {
-      // Limpeza dos dados de autenticação e sessão do usuário
-      localStorage.removeItem('jwtToken');
-      localStorage.removeItem('isAuthenticated');
+    setLoading(true);  // Ativa o indicador de loading
 
-      // TODO: Adicionar limpeza de estado global se necessário
+    // Limpeza do localStorage
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('isAuthenticated');
 
-      // Navegação direta para a tela de login após o logout
-      navigate('/login');
-    } catch (error) {
-      console.error('Erro ao realizar o logout:', error);
-      // Implementar tratamento de erros, como notificações para o usuário
-    }
+    // Adiciona um atraso para simular uma operação de logout e permitir a visualização do loading
+    setTimeout(() => {
+      setLoading(false);  // Desativa o loading
+      navigate('/login', { replace: true });  // Redireciona para a página de login
+    }, 1000);  // Atraso de 1 segundo
   };
 
-  return logout;
+  return { logout, loading };
 };
 
 export default useLogout;

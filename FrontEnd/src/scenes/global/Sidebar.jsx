@@ -8,7 +8,7 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import BugReportIcon from '@mui/icons-material/BugReport';
-import { logoutUser } from "../../service/api"
+import useLogout from '../login_register/logout'
 
 
 const Item = ({ title, icon, selected, setSelected, to, onClick }) => {
@@ -41,7 +41,7 @@ const Sidebar = () => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
-
+  const logout = useLogout();
 
 
   return (
@@ -152,8 +152,7 @@ const Sidebar = () => {
               icon={<MapOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-              onClick={logoutUser} 
-              to="/logout" 
+              onClick={logout} // Use a função de logout diretamente
             />
           </Box>
         </Menu>

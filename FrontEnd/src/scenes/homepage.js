@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, useTheme } from '@mui/material';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import logoImage from './Logotipo_infodevelop.jpg';
+import logoImage from './InfoDevelop.png';
 
 const fadeIn = keyframes`
   from {
@@ -15,8 +15,8 @@ const fadeIn = keyframes`
 
 const AnimatedImage = styled('img')`
   animation: ${fadeIn} 2s ease-out;
-  width: 100%; // ajuste conforme necessário
-  max-width: 600px; // limite o tamanho máximo da imagem
+  width: 100%; 
+  max-width: 600px; 
 `;
 
 const HomePage = () => {
