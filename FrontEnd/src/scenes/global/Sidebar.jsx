@@ -152,8 +152,8 @@ const Sidebar = () => {
               icon={<MapOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-              onClick={logoutUser} // Assuming Item supports an onClick prop
-              to="/logout" // This might be unnecessary if you're handling the routing in logoutUser
+              onClick={logoutUser} 
+              to="/logout" 
             />
           </Box>
         </Menu>

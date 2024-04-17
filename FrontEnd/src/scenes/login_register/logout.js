@@ -5,22 +5,17 @@ const useLogout = () => {
 
   const logout = () => {
     try {
+      // Limpeza dos dados de autenticação e sessão do usuário
       localStorage.removeItem('jwtToken');
-      // Aqui você também poderia limpar qualquer outro estado ou dado relacionado ao usuário
-     localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('isAuthenticated');
 
-      // TODO: Adicione aqui a limpeza do seu estado global, se estiver utilizando
+      // TODO: Adicionar limpeza de estado global se necessário
 
-      // Verificação opcional para confirmar se o token foi removido
-      if (!localStorage.getItem('jwtToken')) {
-        navigate('/login');
-      } else {
-        console.error('Falha ao realizar o logout');
-        // Trate o erro conforme necessário
-      }
+      // Navegação direta para a tela de login após o logout
+      navigate('/login');
     } catch (error) {
       console.error('Erro ao realizar o logout:', error);
-      // Trate o erro conforme necessário
+      // Implementar tratamento de erros, como notificações para o usuário
     }
   };
 

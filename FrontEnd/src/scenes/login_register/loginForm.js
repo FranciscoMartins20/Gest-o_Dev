@@ -1,22 +1,21 @@
+// src/scenes/login_register/LoginForm.js
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, useTheme } from '@mui/material';
-import { loginUser } from '../../service/api'; 
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';  // Certifique-se de que o caminho está correto
 
-const LoginForm = ({ onLoginSuccess } ) => {
+const LoginForm = () => {
   const theme = useTheme();
-  const [CC, setCC] = useState('');
+  const [Username, setUsername] = useState('');
   const [Password, setPassword] = useState('');
-  const navigate = useNavigate()
+  const { login } = useAuth();  // Usando o login do contexto de autenticação
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        
-      const response = await loginUser(parseInt(CC), Password);
-      console.log('Usuário logado:', response);
-      onLoginSuccess();
-      navigate('/')
+      login();  // Atualizando estado de autenticação
+      navigate('/');  // Navegação para a página inicial após login
     } catch (error) {
       console.error('Erro ao fazer login:', error);
     }
@@ -40,15 +39,15 @@ const LoginForm = ({ onLoginSuccess } ) => {
       }}
     >
       <Typography variant="h6" textAlign="center">
-       Bem-vindo !
+        Bem-vindo!
       </Typography>
       <TextField
-        label="CC" 
+        label="Username"
         variant="outlined"
         fullWidth
         required
-        value={CC}
-        onChange={(e) => setCC(e.target.value)} 
+        value={Username}
+        onChange={(e) => setUsername(e.target.value)}
       />
       <TextField
         label="Password"
