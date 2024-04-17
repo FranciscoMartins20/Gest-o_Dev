@@ -9,7 +9,7 @@ import { ColorModeContext, useMode } from "./theme";
 import React, { useState, useEffect } from "react";
 import TicketPage from "./scenes/tickets/ticketpage"
 import CreateTicket from "./scenes/tickets/createticket";
-import EditTicket from "./scenes/tickets/editticket"; // Ajuste o caminho conforme necessário
+import EditTicket from "./scenes/tickets/editticket";
 
 
 function App() {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import logoImage from './Logotipo_infodevelop.jpg';
@@ -29,16 +29,10 @@ const HomePage = () => {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100vh',
+        height: '75vh',
         backgroundColor: theme.palette.background.default,
       }}
     >
-      <Typography variant="h2" component="h1" gutterBottom>
-        Bem-vindo à Homepage
-      </Typography>
-      <Typography variant="body1" component="p" textAlign="center">
-        Esta é uma homepage simples criada com o tema do Material-UI.
-      </Typography>
       <AnimatedImage src={logoImage} alt="Animated Image" />
     </Box>
   );
