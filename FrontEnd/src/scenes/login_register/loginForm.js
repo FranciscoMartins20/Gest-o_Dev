@@ -1,5 +1,5 @@
 // src/scenes/login_register/LoginForm.js
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { Box, Button, TextField, Typography, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';  // Certifique-se de que o caminho está correto
@@ -8,8 +8,9 @@ const LoginForm = () => {
   const theme = useTheme();
   const [Username, setUsername] = useState('');
   const [Password, setPassword] = useState('');
-  const { login } = useAuth();  // Usando o login do contexto de autenticação
   const navigate = useNavigate();
+  const { isAuthenticated, login } = useAuth();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,6 +21,13 @@ const LoginForm = () => {
       console.error('Erro ao fazer login:', error);
     }
   };
+
+  useEffect(() => {
+   
+    if (isAuthenticated) {
+   
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <Box
