@@ -27,11 +27,10 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
-        localStorage.removeItem('isAuthenticated'); // Remove a autenticação do localStorage
-        setIsAuthenticated(false); // Atualiza o estado de autenticação para falso
+        localStorage.removeItem('isAuthenticated');
+        setIsAuthenticated(false); 
     };
 
-    // Certifique-se de passar todos os métodos e estados necessários no valor do contexto
     return (
         <AuthContext.Provider value={{ isAuthenticated, login, logout, loading, value }}>
             {!loading && children} 
