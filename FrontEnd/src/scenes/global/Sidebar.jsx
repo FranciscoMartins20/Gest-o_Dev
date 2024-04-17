@@ -8,7 +8,7 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import BugReportIcon from '@mui/icons-material/BugReport';
-import useLogout from '../login_register/logout'
+import { useAuth } from '../../context/AuthContext';
 
 
 const Item = ({ title, icon, selected, setSelected, to, onClick }) => {
@@ -41,8 +41,8 @@ const Sidebar = () => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
-  const logout = useLogout();
-
+  const { logout } = useAuth();
+ 
 
   return (
     <Box
