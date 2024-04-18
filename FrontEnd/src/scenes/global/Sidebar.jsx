@@ -69,7 +69,7 @@ const Sidebar = () => {
             {!isCollapsed && (
               <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
                 <Typography variant="h3" color={colors.grey[100]}>
-                  Gestão de Tarefas
+                    Gestão
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
@@ -85,10 +85,10 @@ const Sidebar = () => {
               </Box>
               <Box textAlign="center">
                 <Typography variant="h2" color={colors.grey[100]} fontWeight="bold" sx={{ m: "10px 0 0 0" }}>
-                  {user.nome || "Nome do Utilizador"}
+                  {user.Nome || "Nome do Utilizador"}
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                  {user.role || "Role do Utilizador"}
+                  {user.Role || "Role do Utilizador"}
                 </Typography>
               </Box>
             </Box>

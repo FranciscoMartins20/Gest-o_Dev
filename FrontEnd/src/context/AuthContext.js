@@ -26,14 +26,14 @@ export const AuthProvider = ({ children }) => {
     const login = async (username, password) => {
         try {
             const response = await loginUser(username, password);
-            const { token } = response.data;
+            const { token } = response;
             localStorage.setItem('isAuthenticated', 'true');
             localStorage.setItem('token', token);
             setIsAuthenticated(true);
             fetchAndSetUserDetails(token);
         } catch (error) {
             console.error('Erro ao fazer login:', error);
-            // Trate o erro aqui, se necessário
+           
         }
     };
 

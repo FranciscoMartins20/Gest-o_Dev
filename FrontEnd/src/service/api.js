@@ -113,9 +113,7 @@ export const fetchTicketDetails = async (ticketId) => {
 export const fetchUserDetails = async () => {
   try {
       const token = localStorage.getItem('token'); // Recupera o token de autenticação do localStorage
-      if (!token) {
-          throw new Error('No token found');
-      }
+   
 
       const response = await axios.get(`${API_URL}/me`, {
           headers: {
