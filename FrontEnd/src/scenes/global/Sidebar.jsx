@@ -10,7 +10,6 @@ import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import BugReportIcon from '@mui/icons-material/BugReport';
 import { useAuth } from '../../context/AuthContext';
 
-
 const Item = ({ title, icon, selected, setSelected, to, onClick }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -33,16 +32,12 @@ const Item = ({ title, icon, selected, setSelected, to, onClick }) => {
   );
 };
 
-
-
-
 const Sidebar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
-  const { logout } = useAuth();
- 
+  const { logout, user } = useAuth(); // Destructure 'user' from the auth context
 
   return (
     <Box
@@ -66,22 +61,13 @@ const Sidebar = () => {
     >
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
-          {/* LOGO AND MENU ICON */}
           <MenuItem
             onClick={() => setIsCollapsed(!isCollapsed)}
             icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-            style={{
-              margin: "10px 0 20px 0",
-              color: colors.grey[100],
-            }}
+            style={{ margin: "10px 0 20px 0", color: colors.grey[100] }}
           >
             {!isCollapsed && (
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                ml="15px"
-              >
+              <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
                 <Typography variant="h3" color={colors.grey[100]}>
                   Gestão de Tarefas
                 </Typography>
@@ -95,65 +81,26 @@ const Sidebar = () => {
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
-                <img
-                  alt="profile-user"
-                  width="100px"
-                  height="100px"
-                  src={`../../assets/user.png`}
-                  style={{borderRadius: "50%" }}
-                />
+                <img alt="profile-user" width="100px" height="100px" src={`../../assets/user.png`} style={{ borderRadius: "50%" }} />
               </Box>
               <Box textAlign="center">
-                <Typography
-                  variant="h2"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  sx={{ m: "10px 0 0 0" }}
-                >
-                  Nome do Utilizador
+                <Typography variant="h2" color={colors.grey[100]} fontWeight="bold" sx={{ m: "10px 0 0 0" }}>
+                  {user.nome || "Nome do Utilizador"}
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                  Role do Utilizador
+                  {user.role || "Role do Utilizador"}
                 </Typography>
               </Box>
             </Box>
           )}
 
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-            <Item
-              title="Dashboard"
-              to="/"
-              icon={<HomeOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-             <Item
-              title="Tickets"
-              to="/ticket"
-              icon={<BugReportIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            
-
-
-
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
+            <Item title="Dashboard" to="/" icon={<HomeOutlinedIcon />} selected={selected} setSelected={setSelected} />
+            <Item title="Tickets" to="/ticket" icon={<BugReportIcon />} selected={selected} setSelected={setSelected} />
+            <Typography variant="h6" color={colors.grey[300]} sx={{ m: "15px 0 5px 20px" }}>
               Charts
             </Typography>
-
-
-            <Item
-              title="Logout"
-              icon={<MapOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-              onClick={logout} // Use a função de logout diretamente
-            />
+            <Item title="Logout" icon={<MapOutlinedIcon />} selected={selected} setSelected={setSelected} onClick={logout} />
           </Box>
         </Menu>
       </ProSidebar>

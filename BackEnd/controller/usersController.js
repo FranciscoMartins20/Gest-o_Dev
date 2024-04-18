@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { executeQuery } = require('../db');
+const sql = require('mssql');
+
 
 const registrarUtilizador = async (req, res) => {
     const { Username, Nome, Email, EmailOpcional, Telemovel, Password, Role } = req.body;
@@ -43,7 +45,7 @@ const fazerLogin = async (req, res) => {
 
     try {
         if (!Username || !Password) {
-            throw new Error('CC ou senha não fornecidos');
+            throw new Error('Username ou senha não fornecidos');
         }
 
         // Supõe-se que executeQuery é uma função definida em outro lugar para executar consultas SQL
@@ -76,8 +78,37 @@ const logout = (req, res) => {
     res.status(200).send('Logout realizado com sucesso.');
 };
 
+const getUtilizador = async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = jwt.verify(token, 'secreto');
+        const username = decoded.Username;
+
+        const query = `SELECT Username, Nome, Email, Role FROM users WHERE Username = @username`;
+        const params = {
+            username: { value: username, type: sql.VarChar(50) } // Ajuste o tamanho conforme sua necessidade
+        };
+
+        const user = await executeQuery(query, params);
+
+        if (user.length > 0) {
+            res.json(user[0]);
+        } else {
+            res.status(404).send('Usuário não encontrado.');
+        }
+    } catch (error) {
+        console.error('Erro ao obter informações do usuário:', error);
+        res.status(500).send('Erro interno do servidor');
+    }
+};
+
+
+
+
+
 module.exports = {
     registrarUtilizador,
     fazerLogin,
-    logout
+    logout,
+    getUtilizador
 };

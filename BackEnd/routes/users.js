@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const usersController = require('../controller/usersController');
+const { verificarToken } = require('../middleware/verifyToken');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 
@@ -14,6 +15,7 @@ router.post('/login', function(req, res) {
 });
 
 router.post('/logout', usersController.logout);
+router.get('/me',verificarToken, usersController.getUtilizador);
 
 
 

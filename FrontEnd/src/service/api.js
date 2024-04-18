@@ -2,26 +2,25 @@ import axios from 'axios';
 
 const API_URL = 'http://192.168.68.94:4000'; 
 
-export const loginUser = async (Username, Password) => { 
-    try {
-      const response = await axios.post(`${API_URL}/login`, {
-        Username,
-        Password
-      });
-  
+export const loginUser = async (Username, Password) => {
+  try {
+      const response = await axios.post(`${API_URL}/login`, { Username, Password });
+      const { token } = response.data; // Certifique-se de que o servidor está retornando um objeto com a propriedade 'token'
       
-      const { token } = response.data;
-  
-      localStorage.setItem('token', token);
-  
-      
-      return response.data;
-    } catch (error) {
+      if (token) {
+          localStorage.setItem('token', token);
+          console.log(token);
+          return response.data;
+      } else {
+          throw new Error('Token not provided by the response');
+      }
+  } catch (error) {
       console.error('Erro ao fazer login:', error.response ? error.response.data : error.message);
-      throw error.response ? error.response.data : error;
-    }
-  };
-  
+      throw error;
+  }
+};
+
+
   export const logoutUser = async () => {
     try {
       // Retrieve the token from local storage
@@ -103,10 +102,31 @@ export const fetchTicketDetails = async (ticketId) => {
    
     });
 
-    // Retorna os dados do ticket, que será um objeto com todos os detalhes do ticket
+    
     return response.data;
   } catch (error) {
     console.error('Erro ao buscar detalhes do ticket:', error.response ? error.response.data : error.message);
-    throw error.response ? error.response.data : error; // Lança erro para ser tratado por quem chamou a função
+    throw error.response ? error.response.data : error; 
   }
 };
+
+export const fetchUserDetails = async () => {
+  try {
+      const token = localStorage.getItem('token'); // Recupera o token de autenticação do localStorage
+      if (!token) {
+          throw new Error('No token found');
+      }
+
+      const response = await axios.get(`${API_URL}/me`, {
+          headers: {
+              'Authorization': `Bearer ${token}` // Adiciona o token no cabeçalho para autenticação
+          }
+      });
+
+      return response.data;
+  } catch (error) {
+      console.error('Erro ao buscar detalhes do usuário:', error.response ? error.response.data : error.message);
+      throw error;
+  }
+};
+

@@ -58,24 +58,33 @@ router.get('/tickets/:id', async (req, res) => {
     }
 });
 
-// Atualizar um ticket existente
 router.put('/tickets/:id', async (req, res) => {
     const { data, tempo, empresa, problema, resolucao, estado, responsavel } = req.body;
     const { id } = req.params;
-    const sql = `
+    const query = `
         UPDATE tickets
-        SET data = '${data}', tempo = '${tempo}', empresa = '${empresa}',
-            problema = '${problema}', resolucao = '${resolucao}', estado = '${estado}', responsavel = '${responsavel}'
-        WHERE id = @id`; 
+        SET data = @data, tempo = @tempo, empresa = @empresa,
+            problema = @problema, resolucao = @resolucao, estado = @estado, responsavel = @responsavel
+        WHERE id = @id`;
 
     try {
-        await executeQuery(sql, { id: id }); // Passa o objeto com o parâmetro id
+        await executeQuery(query, {
+            id: { value: id, type: sql.Int },
+            data: { value: data, type: sql.VarChar(50) },
+            tempo: { value: tempo, type: sql.VarChar(50) },
+            empresa: { value: empresa, type: sql.VarChar(255) },
+            problema: { value: problema, type: sql.VarChar(1000) },
+            resolucao: { value: resolucao, type: sql.VarChar(1000) },
+            estado: { value: estado, type: sql.VarChar(50) },
+            responsavel: { value: responsavel, type: sql.VarChar(255) }
+        });
         res.status(200).send('Ticket atualizado com sucesso.');
     } catch (error) {
         console.error('Erro ao atualizar o ticket:', error);
         res.status(500).send('Erro ao atualizar o ticket.');
     }
 });
+
 
 
 

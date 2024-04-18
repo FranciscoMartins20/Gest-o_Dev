@@ -2,19 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { Box, Button, TextField, Typography, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+
 import './loginForm.css';
 
 const LoginForm = () => {
   const theme = useTheme();
-  const [Username, setUsername] = useState('');
-  const [Password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const { isAuthenticated, login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      login();
+      await login(username, password); 
       navigate('/');
     } catch (error) {
       console.error('Erro ao fazer login:', error);
@@ -54,7 +55,7 @@ const LoginForm = () => {
           variant="outlined"
           fullWidth
           required
-          value={Username}
+          value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
         <TextField
@@ -63,7 +64,7 @@ const LoginForm = () => {
           type="password"
           fullWidth
           required
-          value={Password}
+          value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <Button type="submit" variant="contained" fullWidth>

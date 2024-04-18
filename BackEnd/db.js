@@ -14,15 +14,22 @@ const config = {
 async function executeQuery(query, params = {}) {
   try {
     const pool = await sql.connect(config);
-    const result = await pool.request()
-      .input('id', sql.Int, params.id) // Se você estiver usando o ID como parâmetro
-      .query(query);
+    const request = pool.request();
+
+    // Processa cada chave no objeto params
+    Object.keys(params).forEach(key => {
+      const { value, type } = params[key]; // Espera-se que cada parâmetro seja um objeto com 'value' e 'type'
+      request.input(key, type, value); // Adiciona o parâmetro à requisição SQL
+    });
+
+    const result = await request.query(query);
     return result.recordset;
   } catch (error) {
     console.error('Erro ao executar consulta:', error);
     throw error;
   }
 }
+
 
 module.exports = {
   config, // Exporta as configurações de conexão

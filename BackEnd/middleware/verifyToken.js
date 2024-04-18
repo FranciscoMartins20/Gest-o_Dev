@@ -1,22 +1,19 @@
 const jwt = require('jsonwebtoken');
 
 const verificarToken = (req, res, next) => {
-    // Tenta extrair o token do cabeçalho "Authorization"
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Padrão Bearer Token
-
-    console.log(token);
-
-    if (!token) {
-        return res.status(403).send('Token não fornecido');
+    const bearerHeader = req.headers['authorization'];
+    if (!bearerHeader) {
+        return res.status(401).send('Acesso negado. Nenhum token fornecido.');
     }
 
+    const token = bearerHeader.split(' ')[1];
     jwt.verify(token, 'secreto', (err, decoded) => {
         if (err) {
-            return res.status(401).send('Token inválido');
+            res.status(401).send('Token inválido');
+        } else {
+            req.user = decoded; // Certifique-se de que esta linha está correta
+            next();
         }
-        req.decoded = decoded;
-        next();
     });
 };
 
