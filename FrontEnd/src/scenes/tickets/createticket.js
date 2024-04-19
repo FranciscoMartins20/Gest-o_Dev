@@ -76,7 +76,7 @@ const CreateTicket = () => {
                 <label>
                     Estado:
                     <select value={estado} onChange={e => setEstado(e.target.value)}>
-                     
+                        <option value="">Selecione</option>
                         <option value="Aberto">Aberto</option>
                         <option value="Em progresso">Em Progresso</option>
                         <option value="Resolvido">Resolvido</option>
@@ -85,7 +85,7 @@ const CreateTicket = () => {
                 <label>
                     Responsável:
                     <select value={responsavel} onChange={e => setResponsavel(e.target.value)}>
-                        
+                        <option value="">Selecione</option>
                         <option value="Francisco Martins">Francisco Martins</option>
                         <option value="Clara Gomes">Clara Gomes</option>
                     </select>

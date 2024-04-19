@@ -64,3 +64,21 @@
     background-color: #0056b3;
 
 }
+
+.delete-ticket-button {
+    background-color: #ff6347; /* Cor de fundo vermelha */
+    color: white; /* Cor do texto branca */
+    border: none; /* Remove a borda */
+    padding: 5px 10px; /* Espaçamento interno */
+    border-radius: 5px; /* Borda arredondada */
+    font-size: 14px; /* Tamanho da fonte */
+    cursor: pointer; /* Mostra cursor de ponteiro ao passar por cima */
+    float: right; /* Alinha à direita */
+    margin-top: 10px; /* Espaçamento superior */
+}
+
+/* Estilizar o efeito ao passar o mouse */
+.delete-ticket-button:hover {
+    background-color: #cc0000; /* Altera a cor de fundo ao passar o mouse */
+}
+
