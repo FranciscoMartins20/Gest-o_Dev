@@ -242,7 +242,6 @@ const TicketPage = () => {
                     <tbody>
                         {tickets.map(ticket => (
                             <tr key={ticket.id} onClick={() => handleRowClick(ticket.id)} className="ticket-row">
-                              
                                 <td>{new Date(ticket.data).toLocaleDateString()}</td>
                                 <td>{ticket.tempo}</td>
                                 <td>{ticket.empresa}</td>

@@ -61,7 +61,7 @@ const fazerLogin = async (req, res) => {
 
         if (passwordMatch) {
             // Supõe-se que "secreto" é a sua chave secreta para o JWT. Isso deve ser mantido seguro e, em produção, fora do código
-            const token = jwt.sign({ Username: user.Username, Role: user.Role }, 'secreto', { expiresIn: '1h' });
+            const token = jwt.sign({ Username: user.Username, Role: user.Role }, 'secreto');
 
             res.status(200).json({ token: token, message: 'Login bem-sucedido!' });
         } else {
