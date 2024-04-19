@@ -25,6 +25,7 @@
 .create-ticket-page input,
 .create-ticket-page textarea,
 .create-ticket-page select {
+    font-family: 'Arial', sans-serif;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;

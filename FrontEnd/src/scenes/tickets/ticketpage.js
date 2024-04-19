@@ -115,13 +115,20 @@ const TicketPage = () => {
     const loadTickets = async () => {
         try {
             const data = await fetchTickets();
-            const filteredData = data.filter(ticket =>
-                (filters.empresa === '' || ticket.empresa.includes(filters.empresa)) &&
-                (filters.data === '' || ticket.data === filters.data) &&
-                (filters.month === '' || new Date(ticket.data).getMonth() + 1 === parseInt(filters.month)) &&
-                (filters.year === '' || new Date(ticket.data).getFullYear() === parseInt(filters.year)) &&
-                (filters.responsible === '' || ticket.responsavel === filters.responsible)
-            );
+            const filteredData = data.filter(ticket => {
+                const ticketDate = new Date(ticket.data);
+                const filterDate = filters.data ? new Date(filters.data) : null;
+            
+                const ticketDateString = `${('0' + ticketDate.getDate()).slice(-2)}-${('0' + (ticketDate.getMonth() + 1)).slice(-2)}-${ticketDate.getFullYear()}`;
+                const filterDateString = filterDate ? `${('0' + filterDate.getDate()).slice(-2)}-${('0' + (filterDate.getMonth() + 1)).slice(-2)}-${filterDate.getFullYear()}` : null;
+            
+                return (filters.empresa === '' || ticket.empresa.includes(filters.empresa)) &&
+                    (filters.data === '' || ticketDateString === filterDateString) &&
+                    (filters.month === '' || ticketDate.getMonth() + 1 === parseInt(filters.month)) &&
+                    (filters.year === '' || ticketDate.getFullYear() === parseInt(filters.year)) &&
+                    (filters.responsible === '' || ticket.responsavel === filters.responsible);
+            });
+            
             setTickets(filteredData);
             setError(null);
         } catch (error) {
@@ -222,7 +229,7 @@ const TicketPage = () => {
                 <table className="tickets-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                          
                             <th>Data</th>
                             <th>Tempo</th>
                             <th>Empresa</th>
@@ -235,7 +242,7 @@ const TicketPage = () => {
                     <tbody>
                         {tickets.map(ticket => (
                             <tr key={ticket.id} onClick={() => handleRowClick(ticket.id)} className="ticket-row">
-                                <td>{ticket.id}</td>
+                              
                                 <td>{new Date(ticket.data).toLocaleDateString()}</td>
                                 <td>{ticket.tempo}</td>
                                 <td>{ticket.empresa}</td>

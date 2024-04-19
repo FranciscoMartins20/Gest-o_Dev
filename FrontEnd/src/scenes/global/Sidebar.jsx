@@ -98,7 +98,7 @@ const Sidebar = () => {
             <Item title="Dashboard" to="/" icon={<HomeOutlinedIcon />} selected={selected} setSelected={setSelected} />
             <Item title="Tickets" to="/ticket" icon={<BugReportIcon />} selected={selected} setSelected={setSelected} />
             <Typography variant="h6" color={colors.grey[300]} sx={{ m: "15px 0 5px 20px" }}>
-              Charts
+            
             </Typography>
             <Item title="Logout" icon={<MapOutlinedIcon />} selected={selected} setSelected={setSelected} onClick={logout} />
           </Box>
