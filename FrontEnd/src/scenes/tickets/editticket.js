@@ -78,7 +78,6 @@ const EditTicket = () => {
             <br></br>
             <br></br>
             <form onSubmit={handleSubmit} className="edit-ticket-form">
-           
                 <label>
                     Data:
                     <input
