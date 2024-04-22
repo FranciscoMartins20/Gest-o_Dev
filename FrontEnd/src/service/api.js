@@ -5,7 +5,7 @@ const API_URL = 'http://192.168.68.94:4000';
 export const loginUser = async (Username, Password) => {
   try {
     const response = await axios.post(`${API_URL}/login`, { Username, Password });
-    const { token } = response.data; // Certifique-se de que o servidor está retornando um objeto com a propriedade 'token'
+    const { token } = response.data;
 
     if (token) {
       localStorage.setItem('token', token);
@@ -23,10 +23,8 @@ export const loginUser = async (Username, Password) => {
 
 export const logoutUser = async () => {
   try {
-    // Retrieve the token from local storage
     const token = localStorage.getItem('token');
 
-    // If there's a token, send a request to the logout endpoint
     if (token) {
       await axios.post(`${API_URL}/logout`, {}, {
         headers: {
