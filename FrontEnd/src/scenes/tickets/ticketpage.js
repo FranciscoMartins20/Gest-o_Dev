@@ -241,14 +241,14 @@ const TicketPage = () => {
                     </thead>
                     <tbody>
                         {tickets.map(ticket => (
-                            <tr key={ticket.id} onClick={() => handleRowClick(ticket.id)} className="ticket-row">
-                                <td>{new Date(ticket.data).toLocaleDateString()}</td>
-                                <td>{ticket.tempo}</td>
-                                <td>{ticket.empresa}</td>
-                                <td>{ticket.problema}</td>
-                                <td>{ticket.resolucao}</td>
-                                <td>{ticket.estado}</td>
-                                <td>{ticket.responsavel}</td>
+                            <tr key={ticket.Id} onClick={() => handleRowClick(ticket.Id)} className="ticket-row">
+                                <td>{new Date(ticket.Date).toLocaleDateString()}</td>
+                                <td>{ticket.Time}</td>
+                                <td>{ticket.Company}</td>
+                                <td>{ticket.Problem}</td>
+                                <td>{ticket.Resolution}</td>
+                                <td>{ticket.Status}</td>
+                                <td>{ticket.Responsable}</td>
                             </tr>
                         ))}
                     </tbody>

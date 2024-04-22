@@ -1,103 +1,61 @@
 const express = require('express');
 const router = express.Router();
-const { executeQuery } = require('../db'); // Importando a função de execução de consultas
-const sql = require('mssql');
-const config = require('../db');
+const bodyParser = require('body-parser');
+const ticketsController = require('../controller/ticketController');
 
+router.use(bodyParser.json()); // Middleware para parsear JSON no corpo das requisições
 
-
-
-// Buscar todos os tickets
-router.get('/tickets', async (req, res) => {
-    const sql = 'SELECT * FROM tickets';
+// Rota para buscar todos os tickets
+router.get('/', async (req, res) => {
     try {
-        const result = await executeQuery(sql);
-        res.status(200).json(result);
+        const tickets = await ticketsController.getTickets();
+        res.json(tickets);
     } catch (error) {
-        console.error('Erro ao buscar tickets:', error);
-        res.status(500).send('Erro ao buscar tickets');
+        res.status(500).send("Erro ao buscar tickets: " + error.message);
     }
 });
 
-// Adicionar um novo ticket
-router.post('/tickets', async (req, res) => {
-    const { data, tempo, empresa, problema, resolucao, estado, responsavel } = req.body;
-    const sql = `
-        INSERT INTO tickets (data, tempo, empresa, problema, resolucao, estado, responsavel)
-        VALUES ('${data}', '${tempo}', '${empresa}', '${problema}', '${resolucao}', '${estado}', '${responsavel}')
-    `;
+// Rota para adicionar um novo ticket
+router.post('/', async (req, res) => {
     try {
-        await executeQuery(sql);
-        res.status(201).send('Ticket adicionado com sucesso.');
+        await ticketsController.addTicket(req.body);
+        res.status(201).send("Ticket adicionado com sucesso!");
     } catch (error) {
-        console.error('Erro ao adicionar o ticket:', error);
-        res.status(500).send('Erro ao adicionar o ticket.');
+        res.status(500).send("Erro ao adicionar ticket: " + error.message);
     }
 });
-
-
-
 
 // Rota para buscar um ticket específico por ID
-router.get('/tickets/:id', async (req, res) => {
-    const { id } = req.params;
+router.get('/:id', async (req, res) => {
     try {
-        const pool = await sql.connect(config); // Utilizando as configurações de conexão
-        const result = await pool.request()
-            .input('id', sql.Int, id)
-            .query('SELECT * FROM tickets WHERE id = @id');
-        
-        if (result.recordset.length > 0) {
-            res.status(200).json(result.recordset[0]);
+        const ticket = await ticketsController.getTicketById(req.params.id);
+        if (ticket) {
+            res.json(ticket);
         } else {
-            res.status(404).send('Ticket não encontrado');
+            res.status(404).send("Ticket não encontrado");
         }
     } catch (error) {
-        console.error('Erro ao buscar o ticket:', error);
-        res.status(500).send('Erro ao buscar o ticket');
+        res.status(500).send("Erro ao buscar ticket: " + error.message);
     }
 });
 
-router.put('/tickets/:id', async (req, res) => {
-    const { data, tempo, empresa, problema, resolucao, estado, responsavel } = req.body;
-    const { id } = req.params;
-    const query = `
-        UPDATE tickets
-        SET data = @data, tempo = @tempo, empresa = @empresa,
-            problema = @problema, resolucao = @resolucao, estado = @estado, responsavel = @responsavel
-        WHERE id = @id`;
-
+// Rota para atualizar um ticket
+router.put('/:id', async (req, res) => {
     try {
-        await executeQuery(query, {
-            id: { value: id, type: sql.Int },
-            data: { value: data, type: sql.VarChar(50) },
-            tempo: { value: tempo, type: sql.VarChar(50) },
-            empresa: { value: empresa, type: sql.VarChar(255) },
-            problema: { value: problema, type: sql.VarChar(1000) },
-            resolucao: { value: resolucao, type: sql.VarChar(1000) },
-            estado: { value: estado, type: sql.VarChar(50) },
-            responsavel: { value: responsavel, type: sql.VarChar(255) }
-        });
-        res.status(200).send('Ticket atualizado com sucesso.');
+        await ticketsController.updateTicket(req.params.id, req.body);
+        res.status(200).send("Ticket atualizado com sucesso!");
     } catch (error) {
-        console.error('Erro ao atualizar o ticket:', error);
-        res.status(500).send('Erro ao atualizar o ticket.');
+        res.status(500).send("Erro ao atualizar ticket: " + error.message);
     }
 });
 
-
-
-
-// Deletar um ticket
-router.delete('/tickets/:id', async (req, res) => {
-    const { id } = req.params;
-    const sql = `DELETE FROM tickets WHERE id = ${id}`;
+// Rota para deletar um ticket
+router.delete('/:id', async (req, res) => {
     try {
-        await executeQuery(sql);
-        res.status(200).send('Ticket deletado com sucesso.');
+        await ticketsController.deleteTicket(req.params.id);
+        res.status(200).send("Ticket deletado com sucesso!");
     } catch (error) {
-        console.error('Erro ao deletar o ticket:', error);
-        res.status(500).send('Erro ao deletar o ticket.');
+        res.status(500).send("Erro ao deletar ticket: " + error.message);
     }
 });
 

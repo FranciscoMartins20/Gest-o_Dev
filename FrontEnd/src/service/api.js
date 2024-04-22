@@ -49,7 +49,7 @@ export const logoutUser = async () => {
 
 export const fetchTickets = async () => {
   try {
-    const response = await axios.get(`${API_URL}/ticket/tickets`, {
+    const response = await axios.get(`${API_URL}/ticket`, {
 
     });
     return response.data; // Retorna os dados diretamente
@@ -62,7 +62,7 @@ export const fetchTickets = async () => {
 export const createTicket = async (ticketData) => {
   try {
     const token = localStorage.getItem('token'); // Recupera o token de autenticação do localStorage
-    const response = await axios.post(`${API_URL}/ticket/tickets`, ticketData, {
+    const response = await axios.post(`${API_URL}/ticket`, ticketData, {
       headers: {
         'Authorization': `Bearer ${token}` // Adiciona o token no cabeçalho para autenticação
       }
@@ -79,7 +79,7 @@ export const createTicket = async (ticketData) => {
 export const updateTicket = async (ticketId, ticketData) => {
   try {
     const token = localStorage.getItem('token'); // Recupera o token de autenticação do localStorage
-    const response = await axios.put(`${API_URL}/ticket/tickets/${ticketId}`, ticketData, {
+    const response = await axios.put(`${API_URL}/ticket/${ticketId}`, ticketData, {
       headers: {
         'Authorization': `Bearer ${token}` // Adiciona o token no cabeçalho para autenticação
       }
@@ -96,7 +96,7 @@ export const updateTicket = async (ticketId, ticketData) => {
 export const fetchTicketDetails = async (ticketId) => {
   try {
 
-    const response = await axios.get(`${API_URL}/ticket/tickets/${ticketId}`, {
+    const response = await axios.get(`${API_URL}/ticket/${ticketId}`, {
 
     });
 
@@ -128,7 +128,7 @@ export const fetchUserDetails = async () => {
 
 export const deleteTicketID = async (ticketId) => {
   try {
-    const response = await axios.delete(`${API_URL}/ticket/tickets/${ticketId}`, {
+    const response = await axios.delete(`${API_URL}/ticket/${ticketId}`, {
 
     });
     return response.data;

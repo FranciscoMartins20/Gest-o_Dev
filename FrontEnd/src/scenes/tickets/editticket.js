@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { updateTicket, fetchTicketDetails, deleteTicketID } from '../../service/api'; // Certifique-se de que as funções estão exportadas em api.js
+import { updateTicket, fetchTicketDetails, deleteTicketID } from '../../service/api';
 import "./editicket.css";
 
 const EditTicket = () => {
@@ -22,13 +22,13 @@ const EditTicket = () => {
                 const data = await fetchTicketDetails(ticketId);
                 setTicket(prevTicket => ({
                     ...prevTicket,
-                    data: data.data ? data.data.split('T')[0] : '', // Ajuste da data
-                    tempo: data.tempo,
-                    empresa: data.empresa,
-                    problema: data.problema,
-                    resolucao: data.resolucao,
-                    estado: data.estado,
-                    responsavel: data.responsavel
+                    data: data && data.Date ? data.Date.split('T')[0] : '',
+                    tempo: data && data.Time,
+                    empresa: data && data.Company,
+                    problema: data && data.Problem,
+                    resolucao: data && data.Resolution,
+                    estado: data && data.Status,
+                    responsavel: data && data.Responsable
                 }));
             } catch (error) {
                 console.error('Erro ao buscar o ticket:', error);
