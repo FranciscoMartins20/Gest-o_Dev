@@ -7,37 +7,39 @@ const EditTicket = () => {
     const { ticketId } = useParams();
     const navigate = useNavigate();
     const [ticket, setTicket] = useState({
-        data: '',
-        tempo: '',
-        empresa: '',
-        problema: '',
-        resolucao: '',
-        estado: '',
-        responsavel :''
+        Date: '',
+        Time: '',
+        Company: '',
+        Problem: '',
+        Resolution: '',
+        Status: '',
+        Responsable :''
     });
 
     useEffect(() => {
         const loadTicketData = async () => {
             try {
                 const data = await fetchTicketDetails(ticketId);
-                setTicket(prevTicket => ({
-                    ...prevTicket,
-                    data: data && data.Date ? data.Date.split('T')[0] : '',
-                    tempo: data && data.Time,
-                    empresa: data && data.Company,
-                    problema: data && data.Problem,
-                    resolucao: data && data.Resolution,
-                    estado: data && data.Status,
-                    responsavel: data && data.Responsable
-                }));
+                if (data) {
+                    setTicket({
+                        Date: data.Date ? data.Date.split('T')[0] : '',
+                        Time: data.Time || '',
+                        Company: data.Company || '',
+                        Problem: data.Problem || '',
+                        Resolution: data.Resolution || '',
+                        Status: data.Status || '',
+                        Responsable: data.Responsable || ''
+                    });
+                }
             } catch (error) {
                 console.error('Erro ao buscar o ticket:', error);
                 // Tratamento de erro adicional, como notificação ao usuário
             }
         };
-
+    
         loadTicketData();
     }, [ticketId]);
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -82,8 +84,8 @@ const EditTicket = () => {
                     Data:
                     <input
                         type="date"
-                        name="data"
-                        value={ticket.data}
+                        name="Date"
+                        value={ticket.Date}
                         onChange={handleChange}
                     />
                 </label>
@@ -91,8 +93,8 @@ const EditTicket = () => {
                     Tempo:
                     <input
                         type="time"
-                        name="tempo"
-                        value={ticket.tempo}
+                        name="Time"
+                        value={ticket.Time}
                         onChange={handleChange}
                     />
                 </label>
@@ -100,49 +102,42 @@ const EditTicket = () => {
                     Empresa:
                     <input
                         type="text"
-                        name="empresa"
-                        value={ticket.empresa}
+                        name="Company"
+                        value={ticket.Company}
                         onChange={handleChange}
                     />
                 </label>
                 <label>
                     Problema:
                     <textarea
-                        name="problema"
-                        value={ticket.problema}
+                        name="Problem"
+                        value={ticket.Problem}
                         onChange={handleChange}
                     />
                 </label>
                 <label>
                     Resolução:
                     <textarea
-                        name="resolucao"
-                        value={ticket.resolucao}
+                        name="Resolution"
+                        value={ticket.Resolution}
                         onChange={handleChange}
                     />
                 </label>
                 <label>
                     Estado:
-                    <select
-                        name="estado"
-                        value={ticket.estado || ''}
+                    <textarea
+                        name="Status"
+                        value={ticket.Status || ''}
                         onChange={handleChange}
-                    >
-                        <option value="Aberto">Aberto</option>
-                        <option value="Em progresso">Em Progresso</option>
-                        <option value="Resolvido">Resolvido</option>
-                    </select>
+                    />
                 </label>
                 <label>
                     Responsável:
-                    <select
-                        name="responsavel"
-                        value={ticket.responsavel}
+                    <textarea
+                        name="Responsable"
+                        value={ticket.Responsable}
                         onChange={handleChange}
-                    >
-                        <option value="Francisco Martins">Francisco Martins</option>
-                        <option value="Clara Gomes">Clara Gomes</option>
-                    </select>
+                        />
                 </label>
                 <button type="submit">Salvar Alterações</button>
             </form>
