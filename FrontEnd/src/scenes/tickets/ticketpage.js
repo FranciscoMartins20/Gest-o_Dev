@@ -33,13 +33,13 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
 
     // Definir cabeçalhos da tabela
     const headers = [
-        { name: 'Data', key: 'data', width: 15 },
-        { name: 'Tempo', key: 'tempo', width: 10 },
-        { name: 'Empresa', key: 'empresa', width: 20 },
-        { name: 'Problema', key: 'problema', width: 30 },
-        { name: 'Resolução', key: 'resolucao', width: 30 },
-        { name: 'Estado', key: 'estado', width: 15 },
-        { name: 'Responsável', key: 'responsavel', width: 15 }
+        { name: 'Data', key: 'Date', width: 15 },
+        { name: 'Tempo', key: 'Time', width: 10 },
+        { name: 'Empresa', key: 'Company', width: 20 },
+        { name: 'Problema', key: 'Problem', width: 30 },
+        { name: 'Resolução', key: 'Resolution', width: 30 },
+        { name: 'Estado', key: 'Status', width: 15 },
+        { name: 'Responsável', key: 'Responsible', width: 15 }
     ];
 
     worksheet.columns = headers.map(col => ({
@@ -98,12 +98,24 @@ function saveAs(blob, fileName) {
 const TicketPage = () => {
     const [tickets, setTickets] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null)
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
-    const [filters, setFilters] = useState({ empresa: '', data: '', month: '', year: '', week: '', responsible: '' });
-
+    const [filters, setFilters] = useState({
+        Company: '',
+        Date: '',
+        Month: '',
+        Year: '',
+        Responsible: ''
+    });
+    
     const clearFilters = () => {
-        setFilters({ empresa: '', data: '', month: '', year: '', week: '', responsible: '' });
+        setFilters({
+            Company: '',
+            Date: '',
+            Month: '',
+            Year: '',
+            Responsible: ''
+        });
     };
 
     const handleFilterChange = (e) => {
@@ -111,22 +123,21 @@ const TicketPage = () => {
         setFilters(prevFilters => ({ ...prevFilters, [name]: value }));
     };
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const loadTickets = async () => {
         try {
             const data = await fetchTickets();
             const filteredData = data.filter(ticket => {
-                const ticketDate = new Date(ticket.data);
-                const filterDate = filters.data ? new Date(filters.data) : null;
+                const ticketDate = new Date(ticket.Date);
+                const filterDate = filters.Date ? new Date(filters.Date) : null;
             
                 const ticketDateString = `${('0' + ticketDate.getDate()).slice(-2)}-${('0' + (ticketDate.getMonth() + 1)).slice(-2)}-${ticketDate.getFullYear()}`;
                 const filterDateString = filterDate ? `${('0' + filterDate.getDate()).slice(-2)}-${('0' + (filterDate.getMonth() + 1)).slice(-2)}-${filterDate.getFullYear()}` : null;
             
-                return (filters.empresa === '' || ticket.empresa.includes(filters.empresa)) &&
-                    (filters.data === '' || ticketDateString === filterDateString) &&
-                    (filters.month === '' || ticketDate.getMonth() + 1 === parseInt(filters.month)) &&
-                    (filters.year === '' || ticketDate.getFullYear() === parseInt(filters.year)) &&
-                    (filters.responsible === '' || ticket.responsavel === filters.responsible);
+                return (filters.Company === '' || ticket.Company.includes(filters.Company)) &&
+                    (filters.Date === '' || ticketDateString === filterDateString) &&
+                    (filters.Month === '' || ticketDate.getMonth() + 1 === parseInt(filters.Month)) &&
+                    (filters.Year === '' || ticketDate.getFullYear() === parseInt(filters.Year)) &&
+                    (filters.Responsible === '' || ticket.Responsible === filters.Responsible);
             });
             
             setTickets(filteredData);
@@ -146,13 +157,13 @@ const TicketPage = () => {
     };
 
     const handleExportExcel = () => {
-        const { month, year, responsible } = filters;
-        exportToExcel(tickets, 'Lista_de_Tickets', month, year, responsible);
+        const { Month, Year, Responsible } = filters;
+        exportToExcel(tickets, 'Lista_de_Tickets', Month, Year, Responsible);
     };
 
     useEffect(() => {
         loadTickets();
-    }, [filters, loadTickets]); // Dependência de filtros aqui assegura recarga ao mudá-los
+    }, [filters]); // Dependência de filtros aqui assegura recarga ao mudá-los
 
     return (
         <div className="ticket-page">
@@ -160,23 +171,23 @@ const TicketPage = () => {
             <div className="filter-container">
                 <input
                     type="text"
-                    name="empresa"
-                    value={filters.empresa}
+                    name="Company"
+                    value={filters.Company}
                     onChange={handleFilterChange}
                     placeholder="Filtrar por Empresa"
                     className="filter-input filter-empresa"
                 />
                 <input
                     type="date"
-                    name="data"
-                    value={filters.data}
+                    name="Date"
+                    value={filters.Date}
                     onChange={handleFilterChange}
                     placeholder="Filtrar por data"
                     className="filter-input filter-data"
                 />
                 <select
-                    name="year"
-                    value={filters.year}
+                    name="Year"
+                    value={filters.Year}
                     onChange={handleFilterChange}
                     className="filter-input filter-year"
                 >
@@ -185,8 +196,8 @@ const TicketPage = () => {
                     {/* Adicione mais opções de anos conforme necessário */}
                 </select>
                 <select
-                    name="month"
-                    value={filters.month}
+                    name="Month"
+                    value={filters.Month}
                     onChange={handleFilterChange}
                     className="filter-input filter-month"
                 >
@@ -204,17 +215,12 @@ const TicketPage = () => {
                     <option value="11">Novembro</option>
                     <option value="12">Dezembro</option>
                 </select>
-                <select
-                    name="responsible"
-                    value={filters.responsible}
+               <input
+                    name="Responsible"
+                    value={filters.Responsible}
                     onChange={handleFilterChange}
                     className="filter-input filter-responsible"
-                >
-                    <option value="">Filtrar por Responsável</option>
-                    <option value="Francisco Martins">Francisco Martins</option>
-                    <option value="Clara Gomes">Clara Gomes</option>
-                    {/* Adicione mais opções conforme necessário */}
-                </select>
+                    />
                 <button onClick={clearFilters} className="filter-clear-button">Limpar Filtros</button>
             </div>
             <div className="actions-container">
@@ -229,7 +235,6 @@ const TicketPage = () => {
                 <table className="tickets-table">
                     <thead>
                         <tr>
-                          
                             <th>Data</th>
                             <th>Tempo</th>
                             <th>Empresa</th>
@@ -248,7 +253,7 @@ const TicketPage = () => {
                                 <td>{ticket.Problem}</td>
                                 <td>{ticket.Resolution}</td>
                                 <td>{ticket.Status}</td>
-                                <td>{ticket.Responsable}</td>
+                                <td>{ticket.Responsible}</td>
                             </tr>
                         ))}
                     </tbody>
