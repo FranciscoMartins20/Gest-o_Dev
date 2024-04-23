@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { fetchTickets } from '../../service/api'; // Certifique-se de que o caminho está correto
+import React, { useState, useEffect, useCallback } from 'react';
+import { fetchTickets, fetchCompanyNameByNIF } from '../../service/api';
 import './ticketpage.css';
 import ExcelJS from 'exceljs';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +9,6 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Tickets');
 
-    // Adicionar um título formatado que ocupa mais espaço e tem um estilo mais refinado
     worksheet.mergeCells('A1', 'G3');
     const titleCell = worksheet.getCell('A1');
     titleCell.value = 'InfoDevelop Tickets\nReport';
@@ -17,21 +16,17 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
     titleCell.fill = { type: 'pattern', pattern: 'none' };
     titleCell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
 
-    // Adicionar um logotipo quadrado ao lado do título
     const logo = workbook.addImage({
         base64: imagem_info,
         extension: 'png',
     });
-    // Supondo que o tamanho da célula e do logotipo sejam ajustados para um quadrado perfeito
-    worksheet.addImage(logo, 'H1:I5'); // Adapte conforme necessário para o tamanho do logotipo
+    worksheet.addImage(logo, 'H1:I5');
 
-    // Espaço antes dos cabeçalhos
     worksheet.addRow([]);
     worksheet.addRow([]);
 
     worksheet.views = [{ showGridLines: false }];
 
-    // Definir cabeçalhos da tabela
     const headers = [
         { name: 'Data', key: 'Date', width: 15 },
         { name: 'Tempo', key: 'Time', width: 10 },
@@ -47,7 +42,6 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
         width: col.width
     }));
 
-    // Adicionar uma tabela com formatação estilo Excel
     const table = worksheet.addTable({
         name: 'TicketsTable',
         ref: 'A6',
@@ -64,9 +58,8 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
         rows: tickets.map(ticket => headers.map(header => ticket[header.key]))
     });
 
-    table.commit(); // Finaliza a adição da tabela
+    table.commit();
 
-    // Ajustar automaticamente o tamanho das colunas
     worksheet.columns.forEach(column => {
         let maxLength = 0;
         column.eachCell({ includeEmpty: true }, cell => {
@@ -75,15 +68,13 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
                 maxLength = cellLength;
             }
         });
-        column.width = maxLength < 10 ? 10 : maxLength + 2; // adiciona espaço extra para estética
+        column.width = maxLength < 10 ? 10 : maxLength + 2;
     });
 
-    // Escrever o arquivo Excel
     const buffer = await workbook.xlsx.writeBuffer();
     saveAs(new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), `${fileName}_${month}_${year}_${responsible}.xlsx`);
 };
 
-// Função para salvar o arquivo
 function saveAs(blob, fileName) {
     const url = window.URL.createObjectURL(blob);
     const anchor = document.createElement('a');
@@ -107,7 +98,7 @@ const TicketPage = () => {
         Year: '',
         Responsible: ''
     });
-    
+
     const clearFilters = () => {
         setFilters({
             Company: '',
@@ -123,34 +114,43 @@ const TicketPage = () => {
         setFilters(prevFilters => ({ ...prevFilters, [name]: value }));
     };
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const loadTickets = async () => {
+    const loadTickets = useCallback(async () => {
+        setIsLoading(true);
         try {
             const data = await fetchTickets();
-            const filteredData = data.filter(ticket => {
+            const ticketsWithCompanyNames = await Promise.all(data.map(async (ticket) => {
+                try {
+                    const companyName = await fetchCompanyNameByNIF(ticket.Company);
+                    return { ...ticket, Company: companyName };
+                } catch {
+                    return { ...ticket, Company: 'Nome indisponível' };
+                }
+            }));
+
+            const filteredData = ticketsWithCompanyNames.filter(ticket => {
                 const ticketDate = new Date(ticket.Date);
                 const filterDate = filters.Date ? new Date(filters.Date) : null;
-            
+
                 const ticketDateString = `${('0' + ticketDate.getDate()).slice(-2)}-${('0' + (ticketDate.getMonth() + 1)).slice(-2)}-${ticketDate.getFullYear()}`;
                 const filterDateString = filterDate ? `${('0' + filterDate.getDate()).slice(-2)}-${('0' + (filterDate.getMonth() + 1)).slice(-2)}-${filterDate.getFullYear()}` : null;
-            
+
                 return (filters.Company === '' || ticket.Company.includes(filters.Company)) &&
                     (filters.Date === '' || ticketDateString === filterDateString) &&
                     (filters.Month === '' || ticketDate.getMonth() + 1 === parseInt(filters.Month)) &&
                     (filters.Year === '' || ticketDate.getFullYear() === parseInt(filters.Year)) &&
                     (filters.Responsible === '' || ticket.Responsible === filters.Responsible);
             });
-            
+
             setTickets(filteredData);
             setError(null);
         } catch (error) {
             setError('Falha ao buscar tickets: ' + error.message);
         }
         setIsLoading(false);
-    };
+    }, [filters]);
 
     const handleCreateTicket = () => {
-        navigate('/create-ticket');  // Atualize para o caminho correto conforme seu roteador
+        navigate('/create-ticket');
     };
 
     const handleRowClick = (ticketId) => {
@@ -164,7 +164,7 @@ const TicketPage = () => {
 
     useEffect(() => {
         loadTickets();
-    }, [filters, loadTickets]); // Dependência de filtros aqui assegura recarga ao mudá-los
+    }, [filters, loadTickets]);
 
     return (
         <div className="ticket-page">
@@ -216,12 +216,12 @@ const TicketPage = () => {
                     <option value="11">Novembro</option>
                     <option value="12">Dezembro</option>
                 </select>
-               <input
+                <input
                     name="Responsible"
                     value={filters.Responsible}
                     onChange={handleFilterChange}
                     className="filter-input filter-responsible"
-                    />
+                />
                 <button onClick={clearFilters} className="filter-clear-button">Limpar Filtros</button>
             </div>
             <div className="actions-container">
@@ -254,7 +254,7 @@ const TicketPage = () => {
                                 <td>{ticket.Problem}</td>
                                 <td>{ticket.Resolution}</td>
                                 <td>{ticket.Status}</td>
-                                <td>{ticket.Responsible}</td>
+                                <td>{ticket.Responsable}</td>
                             </tr>
                         ))}
                     </tbody>

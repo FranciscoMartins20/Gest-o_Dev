@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { updateTicket, fetchTicketDetails, deleteTicketID } from '../../service/api';
+import { fetchCompanyNameByNIF } from '../../service/api'; 
 import "./editicket.css";
 
 const EditTicket = () => {
@@ -15,6 +16,7 @@ const EditTicket = () => {
         Status: '',
         Responsable :''
     });
+    const [companyName, setCompanyName] = useState(''); // Estado para armazenar o nome da empresa
 
     useEffect(() => {
         const loadTicketData = async () => {
@@ -30,6 +32,9 @@ const EditTicket = () => {
                         Status: data.Status || '',
                         Responsable: data.Responsable || ''
                     });
+                    // Carregar o nome da empresa com base no NIF
+                    const name = await fetchCompanyNameByNIF(data.Company);
+                    setCompanyName(name);
                 }
             } catch (error) {
                 console.error('Erro ao buscar o ticket:', error);
@@ -39,7 +44,6 @@ const EditTicket = () => {
     
         loadTicketData();
     }, [ticketId]);
-    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -103,8 +107,9 @@ const EditTicket = () => {
                     <input
                         type="text"
                         name="Company"
-                        value={ticket.Company}
+                        value={companyName} // Exibe o nome da empresa em vez do NIF
                         onChange={handleChange}
+                        disabled // Desabilita a edição do campo
                     />
                 </label>
                 <label>

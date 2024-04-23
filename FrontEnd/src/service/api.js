@@ -139,3 +139,12 @@ export const deleteTicketID = async (ticketId) => {
 
 }
 
+export const fetchCompanyNameByNIF = async (NIF) => {
+  try {
+    const response = await axios.get(`${API_URL}/company/${NIF}`);
+    return response.data.companyName;
+  } catch (error) {
+    console.error('Error fetching company name:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
