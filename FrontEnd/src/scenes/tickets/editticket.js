@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { updateTicket, fetchTicketDetails, deleteTicketID } from '../../service/api';
-import { fetchCompanyNameByNIF } from '../../service/api'; 
+import { updateTicket, fetchTicketDetails, deleteTicketID, fetchCompanyNameByNIF, fetchUserDetailsByUsername } from '../../service/api';
 import "./editicket.css";
 
 const EditTicket = () => {
@@ -14,9 +13,10 @@ const EditTicket = () => {
         Problem: '',
         Resolution: '',
         Status: '',
-        Responsable :''
+        Responsable: ''
     });
     const [companyName, setCompanyName] = useState(''); // Estado para armazenar o nome da empresa
+    const [responsableName, setResponsableName] = useState(''); // Estado para armazenar o nome do responsável
 
     useEffect(() => {
         const loadTicketData = async () => {
@@ -35,13 +35,17 @@ const EditTicket = () => {
                     // Carregar o nome da empresa com base no NIF
                     const name = await fetchCompanyNameByNIF(data.Company);
                     setCompanyName(name);
+
+                    // Carregar o nome do responsável com base no username
+                    const userDetails = await fetchUserDetailsByUsername(data.Responsable);
+                    setResponsableName(userDetails.Name);
                 }
             } catch (error) {
                 console.error('Erro ao buscar o ticket:', error);
                 // Tratamento de erro adicional, como notificação ao usuário
             }
         };
-    
+
         loadTicketData();
     }, [ticketId]);
 
@@ -138,15 +142,15 @@ const EditTicket = () => {
                 </label>
                 <label>
                     Responsável:
-                    <textarea
+                    <input
+                        type="text"
                         name="Responsable"
-                        value={ticket.Responsable}
+                        value={responsableName} // Exibe o nome do responsável
                         onChange={handleChange}
-                        />
+                    />
                 </label>
                 <button type="submit">Salvar Alterações</button>
             </form>
-            
         </div>
     );
 };

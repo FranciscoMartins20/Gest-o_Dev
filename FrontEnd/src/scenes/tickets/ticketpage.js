@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { fetchTickets, fetchCompanyNameByNIF } from '../../service/api';
+import { fetchTickets, fetchCompanyNameByNIF,fetchUserDetailsByUsername } from '../../service/api';
 import './ticketpage.css';
 import ExcelJS from 'exceljs';
 import { useNavigate } from 'react-router-dom';
@@ -121,9 +121,11 @@ const TicketPage = () => {
             const ticketsWithCompanyNames = await Promise.all(data.map(async (ticket) => {
                 try {
                     const companyName = await fetchCompanyNameByNIF(ticket.Company);
-                    return { ...ticket, Company: companyName };
+                    const userDetails = await fetchUserDetailsByUsername(ticket.Responsable);
+                    const responsibleName = userDetails.Name;
+                    return { ...ticket, Company: companyName, Responsable: responsibleName };
                 } catch {
-                    return { ...ticket, Company: 'Nome indisponível' };
+                    return { ...ticket, Company: 'Nome indisponível', Responsable: 'Nome indisponível' };
                 }
             }));
 
@@ -217,7 +219,7 @@ const TicketPage = () => {
                     <option value="12">Dezembro</option>
                 </select>
                 <input
-                    name="Responsible"
+                    name="Responsable"
                     value={filters.Responsible}
                     onChange={handleFilterChange}
                     className="filter-input filter-responsible"

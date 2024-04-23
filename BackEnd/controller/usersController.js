@@ -102,7 +102,28 @@ const getUtilizador = async (req, res) => {
     }
 };
 
+const getUtilizadorByUsername = async (req, res) => {
+    try {
+        const { Username } = req.params;
+
+        
+        const query = "SELECT Username, Name, Email, Role FROM Users WHERE Username = @Username";
+        const params = { Username: { value: Username, type: sql.VarChar(50) } };
+        const user = await executeQuery(query, params);
+
+        if (user.length > 0) {
+            res.json(user[0]);
+        } else {
+            res.status(404).send('Usuário não encontrado.');
+        }
+    } catch (error) {
+        console.error('Erro ao obter informações do usuário:', error);
+        res.status(500).send('Erro interno do servidor');
+    }
+};
+
 module.exports = {
+    getUtilizadorByUsername,
     registrarUtilizador,
     fazerLogin,
     logout,

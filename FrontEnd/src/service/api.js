@@ -95,8 +95,11 @@ export const updateTicket = async (ticketId, ticketData) => {
 
 export const fetchTicketDetails = async (ticketId) => {
   try {
-
+    const token = localStorage.getItem('token');
     const response = await axios.get(`${API_URL}/ticket/${ticketId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}` // Adiciona o token no cabeçalho para autenticação
+      }
 
     });
 
@@ -146,5 +149,20 @@ export const fetchCompanyNameByNIF = async (NIF) => {
   } catch (error) {
     console.error('Error fetching company name:', error.response ? error.response.data : error.message);
     throw error;
+  }
+};
+
+export const fetchUserDetailsByUsername = async (username) => {
+  try {
+    const response = await axios.get(`${API_URL}/user/${username}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar detalhes do usuário pelo nome de usuário:', error.response ? error.response.data : error.message);
+    throw error.response ? error.response.data : error;
   }
 };
