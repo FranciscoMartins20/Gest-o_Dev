@@ -13,10 +13,10 @@ const EditTicket = () => {
         Problem: '',
         Resolution: '',
         Status: '',
-        Responsable: ''
+        Responsible: ''
     });
     const [companyName, setCompanyName] = useState(''); // Estado para armazenar o nome da empresa
-    const [responsableName, setResponsableName] = useState(''); // Estado para armazenar o nome do responsável
+    const [responsibleName, setResponsibleName] = useState(''); // Estado para armazenar o nome do responsável
 
     useEffect(() => {
         const loadTicketData = async () => {
@@ -30,15 +30,15 @@ const EditTicket = () => {
                         Problem: data.Problem || '',
                         Resolution: data.Resolution || '',
                         Status: data.Status || '',
-                        Responsable: data.Responsable || ''
+                        Responsible: data.Responsible || ''
                     });
                     // Carregar o nome da empresa com base no NIF
                     const name = await fetchCompanyNameByNIF(data.Company);
                     setCompanyName(name);
 
                     // Carregar o nome do responsável com base no username
-                    const userDetails = await fetchUserDetailsByUsername(data.Responsable);
-                    setResponsableName(userDetails.Name);
+                    const userDetails = await fetchUserDetailsByUsername(data.Responsible);
+                    setResponsibleName(userDetails.Name);
                 }
             } catch (error) {
                 console.error('Erro ao buscar o ticket:', error);
@@ -144,8 +144,8 @@ const EditTicket = () => {
                     Responsável:
                     <input
                         type="text"
-                        name="Responsable"
-                        value={responsableName} // Exibe o nome do responsável
+                        name="Responsible"
+                        value={responsibleName} // Exibe o nome do responsável
                         onChange={handleChange}
                     />
                 </label>

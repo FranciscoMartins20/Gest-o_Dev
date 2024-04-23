@@ -22,6 +22,23 @@ async function getCompanyNameByNIF(NIF) {
   }
 }
 
+
+async function getAllCompanies() {
+  try {
+    const query = 'SELECT * FROM Company';
+    
+    const result = await db.executeQuery(query);
+    
+    return result;
+  } catch (error) {
+    console.error('Error fetching companies:', error);
+    throw error;
+  }
+}
+
+
+
 module.exports = {
-  getCompanyNameByNIF 
+  getCompanyNameByNIF,
+  getAllCompanies
 };

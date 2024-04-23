@@ -121,11 +121,11 @@ const TicketPage = () => {
             const ticketsWithCompanyNames = await Promise.all(data.map(async (ticket) => {
                 try {
                     const companyName = await fetchCompanyNameByNIF(ticket.Company);
-                    const userDetails = await fetchUserDetailsByUsername(ticket.Responsable);
+                    const userDetails = await fetchUserDetailsByUsername(ticket.Responsible);
                     const responsibleName = userDetails.Name;
-                    return { ...ticket, Company: companyName, Responsable: responsibleName };
+                    return { ...ticket, Company: companyName, Responsible: responsibleName };
                 } catch {
-                    return { ...ticket, Company: 'Nome indisponível', Responsable: 'Nome indisponível' };
+                    return { ...ticket, Company: 'Nome indisponível', Responsible: 'Nome indisponível' };
                 }
             }));
 
@@ -219,7 +219,7 @@ const TicketPage = () => {
                     <option value="12">Dezembro</option>
                 </select>
                 <input
-                    name="Responsable"
+                    name="Responsible"
                     value={filters.Responsible}
                     onChange={handleFilterChange}
                     className="filter-input filter-responsible"
@@ -256,7 +256,7 @@ const TicketPage = () => {
                                 <td>{ticket.Problem}</td>
                                 <td>{ticket.Resolution}</td>
                                 <td>{ticket.Status}</td>
-                                <td>{ticket.Responsable}</td>
+                                <td>{ticket.Responsible}</td>
                             </tr>
                         ))}
                     </tbody>

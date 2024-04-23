@@ -30,7 +30,7 @@ const CreateTicket = () => {
             Problem: Problem,
             Resolution: Resolution,
             Status: Status,
-            Responsable: Responsible
+            Responsible: Responsible
         };
 
         try {

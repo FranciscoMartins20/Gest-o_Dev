@@ -14,8 +14,8 @@ async function getTickets() {
 
   async function addTicket(ticketData) {
     const query = `
-      INSERT INTO Ticket (Date, Time, Company, Problem, Resolution, Status, Responsable)
-      VALUES (@Date, @Time, @Company, @Problem, @Resolution, @Status, @Responsable)
+      INSERT INTO Ticket (Date, Time, Company, Problem, Resolution, Status, Responsible)
+      VALUES (@Date, @Time, @Company, @Problem, @Resolution, @Status, @Responsible)
     `;
     try {
         await executeQuery(query, {
@@ -25,7 +25,7 @@ async function getTickets() {
             Problem: { value: ticketData.Problem, type: sql.NVarChar(500) },
             Resolution: { value: ticketData.Resolution, type: sql.NVarChar(500) },
             Status: { value: ticketData.Status, type: sql.NVarChar(100) },
-            Responsable: { value: ticketData.Responsable, type: sql.VarChar(50) }
+            Responsible: { value: ticketData.Responsible, type: sql.VarChar(50) }
           });
     } catch (error) {
       console.error('Failed to add ticket', error);
@@ -52,7 +52,7 @@ async function getTickets() {
     const query = `
       UPDATE Ticket
       SET Date = @Date, Time = @Time, Company = @Company, Problem = @Problem,
-          Resolution = @Resolution, Status = @Status, Responsable = @Responsable
+          Resolution = @Resolution, Status = @Status, Responsible = @Responsible
       WHERE Id = @Id
     `;
     try {
@@ -64,7 +64,7 @@ async function getTickets() {
         Problem: { value: ticketData.Problem, type: sql.NVarChar(500) },
         Resolution: { value: ticketData.Resolution, type: sql.NVarChar(500) },
         Status: { value: ticketData.Status, type: sql.NVarChar(100) },
-        Responsable: { value: ticketData.Responsable, type: sql.VarChar(50) }
+        Responsible: { value: ticketData.Responsible, type: sql.VarChar(50) }
       });
     } catch (error) {
       console.error('Failed to update ticket', error);

@@ -18,4 +18,14 @@ router.get('/:NIF', async (req, res) => {
   }
 });
 
+router.get('/', async (req, res) => {
+    try {
+      const allCompanies = await empresasController.getAllCompanies();
+      res.json(allCompanies);
+    } catch (error) {
+      console.error('Error fetching all companies:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  });
+
 module.exports = router;
