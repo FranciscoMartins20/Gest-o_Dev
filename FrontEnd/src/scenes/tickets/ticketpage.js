@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { fetchTickets, fetchCompanyNameByNIF,fetchUserDetailsByUsername } from '../../service/api';
+import { fetchTickets, fetchCompanyNameByNIF, fetchUserDetailsByUsername } from '../../service/api';
 import './ticketpage.css';
 import ExcelJS from 'exceljs';
 import { useNavigate } from 'react-router-dom';
@@ -136,7 +136,7 @@ const TicketPage = () => {
                 const ticketDateString = `${('0' + ticketDate.getDate()).slice(-2)}-${('0' + (ticketDate.getMonth() + 1)).slice(-2)}-${ticketDate.getFullYear()}`;
                 const filterDateString = filterDate ? `${('0' + filterDate.getDate()).slice(-2)}-${('0' + (filterDate.getMonth() + 1)).slice(-2)}-${filterDate.getFullYear()}` : null;
 
-                return (filters.Company === '' || ticket.Company.includes(filters.Company)) &&
+                return (filters.Company === '' || ticket.Company.toLowerCase().includes(filters.Company.toLowerCase())) &&
                     (filters.Date === '' || ticketDateString === filterDateString) &&
                     (filters.Month === '' || ticketDate.getMonth() + 1 === parseInt(filters.Month)) &&
                     (filters.Year === '' || ticketDate.getFullYear() === parseInt(filters.Year)) &&
@@ -218,12 +218,17 @@ const TicketPage = () => {
                     <option value="11">Novembro</option>
                     <option value="12">Dezembro</option>
                 </select>
-                <input
+                <select
                     name="Responsible"
                     value={filters.Responsible}
                     onChange={handleFilterChange}
                     className="filter-input filter-responsible"
-                />
+                >
+                    <option value="">Responsável</option>
+                    <option value="Francisco Martins">Francisco Martins</option>
+                    <option value="Clara Gomes">Clara Gomes</option>
+                </select>
+
                 <button onClick={clearFilters} className="filter-clear-button">Limpar Filtros</button>
             </div>
             <div className="actions-container">

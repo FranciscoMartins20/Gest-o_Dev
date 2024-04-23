@@ -149,13 +149,21 @@ const CreateTicket = () => {
                         onChange={e => setResolution(e.target.value)}
                     />
                 </label>
+
+      
                 <label>
                     Estado:
-                    <input
-                        type="text"
-                        value={Status}
+                    <select  value={Status}
                         onChange={e => setStatus(e.target.value)}
-                    />
+>
+                   
+                        <option value="Pendente">Pendente</option>
+                    <option value="Em Progresso">Em Progresso</option>
+                    <option value="Finalizado">Finalizado</option>
+                    </select>
+                        
+                        
+                   
                 </label>
                 <button type="submit" disabled={isSubmitting}>
                     {isSubmitting ? 'Criando...' : 'Criar Ticket'}

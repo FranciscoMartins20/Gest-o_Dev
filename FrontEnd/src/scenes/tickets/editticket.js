@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { updateTicket, fetchTicketDetails, deleteTicketID, fetchCompanyNameByNIF, fetchUserDetailsByUsername } from '../../service/api';
+import { updateTicket, fetchTicketDetails, deleteTicketID, fetchAllCompanies, fetchAllUsers,fetchCompanyNameByNIF,fetchUserDetailsByUsername } from '../../service/api'; // Importa a função fetchAllUsers
 import "./editicket.css";
 
 const EditTicket = () => {
@@ -15,6 +15,8 @@ const EditTicket = () => {
         Status: '',
         Responsible: ''
     });
+    const [companies, setCompanies] = useState([]); // Estado para armazenar a lista de empresas
+    const [users, setUsers] = useState([]); // Estado para armazenar a lista de usuários
     const [companyName, setCompanyName] = useState(''); // Estado para armazenar o nome da empresa
     const [responsibleName, setResponsibleName] = useState(''); // Estado para armazenar o nome do responsável
 
@@ -48,6 +50,23 @@ const EditTicket = () => {
 
         loadTicketData();
     }, [ticketId]);
+
+    useEffect(() => {
+        const fetchCompaniesAndUsers = async () => {
+            try {
+                const companiesData = await fetchAllCompanies();
+                setCompanies(companiesData);
+
+                const usersData = await fetchAllUsers();
+                setUsers(usersData);
+            } catch (error) {
+                console.error('Erro ao buscar empresas e usuários:', error);
+                // Tratamento de erro adicional, como notificação ao usuário
+            }
+        };
+
+        fetchCompaniesAndUsers();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -108,13 +127,16 @@ const EditTicket = () => {
                 </label>
                 <label>
                     Empresa:
-                    <input
-                        type="text"
+                    <select
                         name="Company"
-                        value={companyName} // Exibe o nome da empresa em vez do NIF
+                        value={ticket.Company}
                         onChange={handleChange}
-                        disabled // Desabilita a edição do campo
-                    />
+                    >
+                        <option value="">Selecione uma empresa</option>
+                        {companies.map(company => (
+                            <option key={company.NIF} value={company.NIF}>{company.Name}</option>
+                        ))}
+                    </select>
                 </label>
                 <label>
                     Problema:
@@ -134,20 +156,30 @@ const EditTicket = () => {
                 </label>
                 <label>
                     Estado:
-                    <textarea
+                    <select
                         name="Status"
                         value={ticket.Status || ''}
                         onChange={handleChange}
-                    />
+                    >
+                     <option value="Pendente">Pendente</option>
+                    <option value="Em Progresso">Em Progresso</option>
+                    <option value="Finalizado">Finalizado</option>
+                      </select>
+
+
                 </label>
                 <label>
                     Responsável:
-                    <input
-                        type="text"
+                    <select
                         name="Responsible"
-                        value={responsibleName} // Exibe o nome do responsável
+                        value={ticket.Responsible}
                         onChange={handleChange}
-                    />
+                    >
+                        <option value="">Selecione um responsável</option>
+                        {users.map(user => (
+                            <option key={user.Username} value={user.Username}>{user.Name}</option>
+                        ))}
+                    </select>
                 </label>
                 <button type="submit">Salvar Alterações</button>
             </form>
