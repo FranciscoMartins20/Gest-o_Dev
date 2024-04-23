@@ -123,6 +123,7 @@ const TicketPage = () => {
         setFilters(prevFilters => ({ ...prevFilters, [name]: value }));
     };
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const loadTickets = async () => {
         try {
             const data = await fetchTickets();
@@ -163,7 +164,7 @@ const TicketPage = () => {
 
     useEffect(() => {
         loadTickets();
-    }, [filters]); // Dependência de filtros aqui assegura recarga ao mudá-los
+    }, [filters, loadTickets]); // Dependência de filtros aqui assegura recarga ao mudá-los
 
     return (
         <div className="ticket-page">
