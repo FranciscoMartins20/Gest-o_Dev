@@ -1,100 +1,113 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createTicket } from '../../service/api';
-import "./createticket.css"
+import "./createticket.css";
 
 const CreateTicket = () => {
-    const [data, setData] = useState('');
-    const [tempo, setTempo] = useState('');
-    const [empresa, setEmpresa] = useState('');
-    const [problema, setProblema] = useState('');
-    const [resolucao, setResolucao] = useState('');
-    const [estado, setEstado] = useState('');
-    const [responsavel, setResponsavel] = useState('');
     const navigate = useNavigate();
 
+    // State para os dados do ticket
+    const [Date, setDate] = useState('');
+    const [Time, setTime] = useState('');
+    const [Company, setCompany] = useState('');
+    const [Problem, setProblem] = useState('');
+    const [Resolution, setResolution] = useState('');
+    const [Status, setStatus] = useState('');
+    const [Responsible, setResponsible] = useState('');
+
+    // State para controlar a submissão do formulário
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         setIsSubmitting(true);
-        const ticketData = { data, tempo, empresa, problema, resolucao, estado, responsavel };
-    
+
+        // Criação do objeto ticketData baseado nos estados
+        const ticketData = {
+            Date: Date,
+            Time: Time,
+            Company: Company,
+            Problem: Problem,
+            Resolution: Resolution,
+            Status: Status,
+            Responsable: Responsible
+        };
+
         try {
-            const result = await createTicket(ticketData);
-            console.log('Ticket criado com sucesso:', result);
-            navigate('/ticket');
+            await createTicket(ticketData);
+            navigate('/ticket'); // Redirecionar para a página de lista de tickets
         } catch (error) {
             console.error('Falha ao criar ticket:', error);
             alert('Falha ao criar ticket: ' + error.message);
+        } finally {
+            setIsSubmitting(false); // Resetar o estado de submissão
         }
-        setIsSubmitting(false);
     };
 
     return (
         <div className="create-ticket-page">
             <h1>Criar Novo Ticket</h1>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="edit-ticket-form">
                 <label>
                     Data:
                     <input
                         type="date"
-                        value={data}
-                        onChange={e => setData(e.target.value)}
+                        value={Date}
+                        onChange={e => setDate(e.target.value)}
                     />
                 </label>
                 <label>
                     Tempo:
                     <input
                         type="time"
-                        value={tempo}
-                        onChange={e => setTempo(e.target.value)}
+                        value={Time}
+                        onChange={e => setTime(e.target.value)}
                     />
                 </label>
                 <label>
                     Empresa:
                     <input
                         type="text"
-                        value={empresa}
-                        onChange={e => setEmpresa(e.target.value)}
+                        value={Company}
+                        onChange={e => setCompany(e.target.value)}
                     />
                 </label>
                 <label>
                     Problema:
                     <textarea
-                        value={problema}
-                        onChange={e => setProblema(e.target.value)}
+                        value={Problem}
+                        onChange={e => setProblem(e.target.value)}
                     />
                 </label>
                 <label>
                     Resolução:
                     <textarea
-                        value={resolucao}
-                        onChange={e => setResolucao(e.target.value)}
+                        value={Resolution}
+                        onChange={e => setResolution(e.target.value)}
                     />
                 </label>
                 <label>
                     Estado:
-                    <select value={estado} onChange={e => setEstado(e.target.value)}>
-                        <option value="">Selecione</option>
-                        <option value="Aberto">Aberto</option>
-                        <option value="Em progresso">Em Progresso</option>
-                        <option value="Resolvido">Resolvido</option>
-                    </select>
+                    <input
+                        type="text"
+                        value={Status}
+                        onChange={e => setStatus(e.target.value)}
+                    />
                 </label>
                 <label>
                     Responsável:
-                    <select value={responsavel} onChange={e => setResponsavel(e.target.value)}>
-                        <option value="">Selecione</option>
-                        <option value="Francisco Martins">Francisco Martins</option>
-                        <option value="Clara Gomes">Clara Gomes</option>
-                    </select>
+                    <input
+                        type="text"
+                        value={Responsible}
+                        onChange={e => setResponsible(e.target.value)}
+                    />
                 </label>
-                <button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Criando...' : 'Criar Ticket'}</button>
+                <button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? 'Criando...' : 'Criar Ticket'}
+                </button>
             </form>
         </div>
     );
-    
 };
 
 export default CreateTicket;
