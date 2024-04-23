@@ -1,32 +1,33 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { fetchTickets, fetchCompanyNameByNIF, fetchUserDetailsByUsername } from '../../service/api';
+import { fetchTickets, fetchCompanyNameByNIF,fetchUserDetailsByUsername } from '../../service/api';
 import './ticketpage.css';
 import ExcelJS from 'exceljs';
 import { useNavigate } from 'react-router-dom';
 import imagem_info from "./assets/imagem_info_data";
+const saveAs = require('file-saver');
 
 const exportToExcel = async (tickets, fileName, month, year, responsible) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Tickets');
 
+    // Configurações iniciais da planilha
     worksheet.mergeCells('A1', 'G3');
     const titleCell = worksheet.getCell('A1');
     titleCell.value = 'InfoDevelop Tickets\nReport';
     titleCell.font = { name: 'Calibri', size: 18, bold: true, color: { argb: 'FF6A8DAD' } };
-    titleCell.fill = { type: 'pattern', pattern: 'none' };
     titleCell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
 
+    // Adicionando uma imagem (logo)
+    // Certifique-se de ter a imagem_info disponível aqui
     const logo = workbook.addImage({
         base64: imagem_info,
         extension: 'png',
     });
     worksheet.addImage(logo, 'H1:I5');
 
-    worksheet.addRow([]);
-    worksheet.addRow([]);
-
     worksheet.views = [{ showGridLines: false }];
 
+    // Definindo os cabeçalhos das colunas
     const headers = [
         { name: 'Data', key: 'Date', width: 15 },
         { name: 'Tempo', key: 'Time', width: 10 },
@@ -42,6 +43,7 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
         width: col.width
     }));
 
+    // Criando a tabela de tickets
     const table = worksheet.addTable({
         name: 'TicketsTable',
         ref: 'A6',
@@ -57,9 +59,62 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
         })),
         rows: tickets.map(ticket => headers.map(header => ticket[header.key]))
     });
-
     table.commit();
 
+    // Adicionando três linhas de espaço
+    worksheet.addRow([]);
+    worksheet.addRow([]);
+    worksheet.addRow([]);
+
+    // Criação de um objeto para contabilizar o tempo por empresa
+    const totalHoursByCompany = {};
+    for (const ticket of tickets) {
+        const timeComponents = ticket.Time.split(':');
+        const hours = parseInt(timeComponents[0]);
+        const minutes = parseInt(timeComponents[1]);
+        const totalMinutes = hours * 60 + minutes;
+        totalHoursByCompany[ticket.Company] = (totalHoursByCompany[ticket.Company] || 0) + totalMinutes;
+    }
+
+    // Adicionando os totais à mesma planilha
+    const totalsStartRow = headers.length + 8;
+    const totalsStartColumn = 1;
+    worksheet.getCell(`A${totalsStartRow}`).value = 'Empresa';
+    worksheet.getCell(`B${totalsStartRow}`).value = 'Total Horas';
+    let totalsRowIndex = totalsStartRow + 1;
+    for (const company in totalHoursByCompany) {
+        const totalMinutes = totalHoursByCompany[company];
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        worksheet.getCell(`A${totalsRowIndex}`).value = company;
+        worksheet.getCell(`B${totalsRowIndex}`).value = `${hours}:${minutes.toString().padStart(2, '0')}`;
+        totalsRowIndex++;
+    }
+
+    // Formatando a tabela de totais
+    const empresaRange = worksheet.getCell(`A${totalsStartRow}:A${totalsRowIndex - 1}`);
+    empresaRange.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
+    };
+    empresaRange.alignment = { horizontal: 'center', vertical: 'middle' };
+    empresaRange.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD9EAD3' } };
+    empresaRange.font = { bold: true };
+    
+    const totalHorasRange = worksheet.getCell(`B${totalsStartRow}:B${totalsRowIndex - 1}`);
+    totalHorasRange.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
+    };
+    totalHorasRange.alignment = { horizontal: 'center', vertical: 'middle' };
+    totalHorasRange.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD9EAD3' } };
+    totalHorasRange.font = { bold: true };
+    
+    // Ajustando larguras das colunas
     worksheet.columns.forEach(column => {
         let maxLength = 0;
         column.eachCell({ includeEmpty: true }, cell => {
@@ -71,20 +126,14 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
         column.width = maxLength < 10 ? 10 : maxLength + 2;
     });
 
+    // Salvando o arquivo
     const buffer = await workbook.xlsx.writeBuffer();
-    saveAs(new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }), `${fileName}_${month}_${year}_${responsible}.xlsx`);
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(blob, `${fileName}_${month}_${year}_${responsible}.xlsx`);
 };
 
-function saveAs(blob, fileName) {
-    const url = window.URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = fileName;
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-    window.URL.revokeObjectURL(url);
-}
+
+
 
 const TicketPage = () => {
     const [tickets, setTickets] = useState([]);
@@ -225,10 +274,10 @@ const TicketPage = () => {
                     className="filter-input filter-responsible"
                 >
                     <option value="">Responsável</option>
-                    <option value="Francisco Martins">Francisco Martins</option>
-                    <option value="Clara Gomes">Clara Gomes</option>
-                </select>
+                    <option value="">Francisco Martins</option>
+                    <option value="">Clara Gomes</option>
 
+                </select>
                 <button onClick={clearFilters} className="filter-clear-button">Limpar Filtros</button>
             </div>
             <div className="actions-container">
