@@ -166,3 +166,29 @@ export const fetchUserDetailsByUsername = async (username) => {
     throw error.response ? error.response.data : error;
   }
 };
+
+export const fetchAllCompanies = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/company`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching all companies:', error.response ? error.response.data : error.message);
+    throw error.response ? error.response.data : error;
+  }
+};
+
+export const fetchAllUsers = async () => {
+  try {
+    const token = localStorage.getItem('token'); // Recupera o token de autenticação do localStorage
+    const response = await axios.get(`${API_URL}/getall`, {
+      headers: {
+        'Authorization': `Bearer ${token}` // Adiciona o token no cabeçalho para autenticação
+      }
+    });
+
+    return response.data; // Retorna os dados de todos os usuários
+  } catch (error) {
+    console.error('Erro ao buscar todos os usuários:', error.response ? error.response.data : error.message);
+    throw error.response ? error.response.data : error;
+  }
+};

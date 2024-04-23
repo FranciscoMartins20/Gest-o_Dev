@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createTicket } from '../../service/api';
+import { createTicket, fetchAllCompanies, fetchAllUsers, fetchCompanyNameByNIF } from '../../service/api'; // Importe a função fetchAllUsers
 import "./createticket.css";
 
 const CreateTicket = () => {
@@ -9,14 +9,58 @@ const CreateTicket = () => {
     // State para os dados do ticket
     const [Date, setDate] = useState('');
     const [Time, setTime] = useState('');
-    const [Company, setCompany] = useState('');
+    const [CompanyNIF, setCompanyNIF] = useState('');
+    const [CompanyName, setCompanyName] = useState(''); 
     const [Problem, setProblem] = useState('');
     const [Resolution, setResolution] = useState('');
     const [Status, setStatus] = useState('');
     const [Responsible, setResponsible] = useState('');
+    const [users, setUsers] = useState([]); // Estado para armazenar a lista de usuários
+
+    // State para armazenar as empresas disponíveis
+    const [companies, setCompanies] = useState([]);
 
     // State para controlar a submissão do formulário
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Função para buscar todas as empresas disponíveis
+    const fetchCompanies = async () => {
+        try {
+            const companiesData = await fetchAllCompanies();
+            setCompanies(companiesData);
+        } catch (error) {
+            console.error('Erro ao buscar empresas:', error);
+            // Trate o erro conforme necessário
+        }
+    };
+
+    // Função para buscar todos os usuários disponíveis
+    const fetchUsers = async () => {
+        try {
+            const usersData = await fetchAllUsers();
+            setUsers(usersData);
+        } catch (error) {
+            console.error('Erro ao buscar usuários:', error);
+            // Trate o erro conforme necessário
+        }
+    };
+
+    // UseEffect para buscar as empresas e usuários quando o componente for montado
+    useEffect(() => {
+        fetchCompanies();
+        fetchUsers();
+    }, []);
+
+    // Função assíncrona para buscar e definir o nome da empresa com base no NIF selecionado
+    const fetchCompanyName = async (NIF) => {
+        try {
+            const companyName = await fetchCompanyNameByNIF(NIF);
+            setCompanyName(companyName);
+        } catch (error) {
+            console.error('Erro ao buscar nome da empresa:', error);
+            // Trate o erro conforme necessário
+        }
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -26,7 +70,7 @@ const CreateTicket = () => {
         const ticketData = {
             Date: Date,
             Time: Time,
-            Company: Company,
+            Company: CompanyNIF, // Envia o NIF da empresa selecionada
             Problem: Problem,
             Resolution: Resolution,
             Status: Status,
@@ -66,11 +110,30 @@ const CreateTicket = () => {
                 </label>
                 <label>
                     Empresa:
-                    <input
-                        type="text"
-                        value={Company}
-                        onChange={e => setCompany(e.target.value)}
-                    />
+                    <select
+                        value={CompanyNIF}
+                        onChange={async (e) => {
+                            setCompanyNIF(e.target.value);
+                            await fetchCompanyName(e.target.value);
+                        }}
+                    >
+                        <option value="">Selecione uma empresa</option>
+                        {companies.map(company => (
+                            <option key={company.NIF} value={company.NIF}>{company.Name}</option>
+                        ))}
+                    </select>
+                </label>
+                <label>
+                    Responsável:
+                    <select
+                        value={Responsible}
+                        onChange={e => setResponsible(e.target.value)}
+                    >
+                        <option value="">Selecione um responsável</option>
+                        {users.map(user => (
+                            <option key={user.Username} value={user.Username}>{user.Name}</option>
+                        ))}
+                    </select>
                 </label>
                 <label>
                     Problema:
@@ -92,14 +155,6 @@ const CreateTicket = () => {
                         type="text"
                         value={Status}
                         onChange={e => setStatus(e.target.value)}
-                    />
-                </label>
-                <label>
-                    Responsável:
-                    <input
-                        type="text"
-                        value={Responsible}
-                        onChange={e => setResponsible(e.target.value)}
                     />
                 </label>
                 <button type="submit" disabled={isSubmitting}>

@@ -122,10 +122,27 @@ const getUtilizadorByUsername = async (req, res) => {
     }
 };
 
+const getAllUtilizadores = async (req, res) => {
+    try {
+        const query = "SELECT * FROM Users";
+        const users = await executeQuery(query);
+
+        if (users.length > 0) {
+            res.json(users);
+        } else {
+            res.status(404).send('Nenhum usuário encontrado.');
+        }
+    } catch (error) {
+        console.error('Erro ao buscar todos os usuários:', error);
+        res.status(500).send('Erro interno do servidor');
+    }
+};
+
 module.exports = {
     getUtilizadorByUsername,
     registrarUtilizador,
     fazerLogin,
     logout,
-    getUtilizador
+    getUtilizador,
+    getAllUtilizadores
 };

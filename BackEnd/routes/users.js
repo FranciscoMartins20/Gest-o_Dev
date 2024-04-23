@@ -20,4 +20,6 @@ router.get('/me', verificarToken, usersController.getUtilizador);
 
 router.get('/user/:Username', usersController.getUtilizadorByUsername);
 
+router.get('/getall', usersController.getAllUtilizadores);
+
 module.exports = router;
