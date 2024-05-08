@@ -9,7 +9,7 @@
     width: 250px; /* Largura da barra lateral */
     background-color: #333; /* Cor de fundo da barra lateral */
     color: #fff; /* Cor do texto na barra lateral */
-    position: fixed; /* Fixar a barra lateral */
+    position: 'fixed';
     height: 100%; /* Altura da barra lateral */
     overflow-y: auto; /* Permitir rolagem na barra lateral se necessário */
   }
@@ -20,4 +20,6 @@
     padding: 20px; /* Espaçamento interno do conteúdo */
     overflow-y: auto; /* Permitir rolagem no conteúdo se necessário */
   }
+  
+
   
