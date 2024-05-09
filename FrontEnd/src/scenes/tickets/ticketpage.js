@@ -18,7 +18,6 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
     titleCell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
 
     // Adicionando uma imagem (logo)
-    // Certifique-se de ter a imagem_info disponível aqui
     const logo = workbook.addImage({
         base64: imagem_info,
         extension: 'png',
@@ -245,7 +244,7 @@ const TicketPage = () => {
                 >
                     <option value="">Ano</option>
                     <option value="2024">2024</option>
-                    {/* Adicione mais opções de anos conforme necessário */}
+            
                 </select>
                 <select
                     name="Month"
