@@ -43,7 +43,7 @@ const CreateTicket = () => {
     const fetchCompanyName = async (NIF) => {
         try {
             const companyName = await fetchCompanyNameByNIF(NIF);
-            // Você pode usar a variável `companyName` para exibir em algum lugar se necessário
+            
         } catch (error) {
             console.error('Erro ao buscar nome da empresa:', error);
         }
