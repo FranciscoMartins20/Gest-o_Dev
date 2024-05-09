@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-const API_URL = 'http://192.168.68.94:4000';
+const API_URL = 'http://localhost:4000';
 
 export const loginUser = async (Username, Password) => {
   try {
     const response = await axios.post(`${API_URL}/login`, { Username, Password });
-    const { token } = response.data; // Certifique-se de que o servidor está retornando um objeto com a propriedade 'token'
+    const { token } = response.data;
 
     if (token) {
       localStorage.setItem('token', token);
@@ -23,10 +23,8 @@ export const loginUser = async (Username, Password) => {
 
 export const logoutUser = async () => {
   try {
-    // Retrieve the token from local storage
     const token = localStorage.getItem('token');
 
-    // If there's a token, send a request to the logout endpoint
     if (token) {
       await axios.post(`${API_URL}/logout`, {}, {
         headers: {
@@ -51,7 +49,7 @@ export const logoutUser = async () => {
 
 export const fetchTickets = async () => {
   try {
-    const response = await axios.get(`${API_URL}/ticket/tickets`, {
+    const response = await axios.get(`${API_URL}/ticket`, {
 
     });
     return response.data; // Retorna os dados diretamente
@@ -64,7 +62,7 @@ export const fetchTickets = async () => {
 export const createTicket = async (ticketData) => {
   try {
     const token = localStorage.getItem('token'); // Recupera o token de autenticação do localStorage
-    const response = await axios.post(`${API_URL}/ticket/tickets`, ticketData, {
+    const response = await axios.post(`${API_URL}/ticket`, ticketData, {
       headers: {
         'Authorization': `Bearer ${token}` // Adiciona o token no cabeçalho para autenticação
       }
@@ -81,7 +79,7 @@ export const createTicket = async (ticketData) => {
 export const updateTicket = async (ticketId, ticketData) => {
   try {
     const token = localStorage.getItem('token'); // Recupera o token de autenticação do localStorage
-    const response = await axios.put(`${API_URL}/ticket/tickets/${ticketId}`, ticketData, {
+    const response = await axios.put(`${API_URL}/ticket/${ticketId}`, ticketData, {
       headers: {
         'Authorization': `Bearer ${token}` // Adiciona o token no cabeçalho para autenticação
       }
@@ -97,8 +95,11 @@ export const updateTicket = async (ticketId, ticketData) => {
 
 export const fetchTicketDetails = async (ticketId) => {
   try {
-
-    const response = await axios.get(`${API_URL}/ticket/tickets/${ticketId}`, {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`${API_URL}/ticket/${ticketId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}` // Adiciona o token no cabeçalho para autenticação
+      }
 
     });
 
@@ -130,7 +131,7 @@ export const fetchUserDetails = async () => {
 
 export const deleteTicketID = async (ticketId) => {
   try {
-    const response = await axios.delete(`${API_URL}/ticket/tickets/${ticketId}`, {
+    const response = await axios.delete(`${API_URL}/ticket/${ticketId}`, {
 
     });
     return response.data;
@@ -141,3 +142,53 @@ export const deleteTicketID = async (ticketId) => {
 
 }
 
+export const fetchCompanyNameByNIF = async (NIF) => {
+  try {
+    const response = await axios.get(`${API_URL}/company/${NIF}`);
+    return response.data.companyName;
+  } catch (error) {
+    console.error('Error fetching company name:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+};
+
+export const fetchUserDetailsByUsername = async (username) => {
+  try {
+    const response = await axios.get(`${API_URL}/user/${username}`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar detalhes do usuário pelo nome de usuário:', error.response ? error.response.data : error.message);
+    throw error.response ? error.response.data : error;
+  }
+};
+
+export const fetchAllCompanies = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/company`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching all companies:', error.response ? error.response.data : error.message);
+    throw error.response ? error.response.data : error;
+  }
+};
+
+export const fetchAllUsers = async () => {
+  try {
+    const token = localStorage.getItem('token'); // Recupera o token de autenticação do localStorage
+    const response = await axios.get(`${API_URL}/getall`, {
+      headers: {
+        'Authorization': `Bearer ${token}` // Adiciona o token no cabeçalho para autenticação
+      }
+    });
+
+    return response.data; // Retorna os dados de todos os usuários
+  } catch (error) {
+    console.error('Erro ao buscar todos os usuários:', error.response ? error.response.data : error.message);
+    throw error.response ? error.response.data : error;
+  }
+};

@@ -3,37 +3,37 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Utiliza 100% da altura da viewport para centralizar verticalmente */
+    height: 100vh; 
   }
   
   .login-form {
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px; /* Padding ao redor do formulário para dar espaço */
-    width: 100%; /* Ocupa a largura do container até um máximo definido abaixo */
-    max-width: 400px; /* Largura máxima do formulário para manter a forma */
+    padding: 20px; 
+    width: 100%; 
+    max-width: 400px; 
   }
   
   .login-title {
-    color: #333333; /* Cor do texto do título */
+    color: #333333; 
   }
   
   .login-input {
-    margin-top: 10px; /* Espaçamento superior para os inputs */
+    margin-top: 10px; 
   }
   
   .login-input.username,
   .login-input.password {
-    border-color: #0056b3; /* Cor da borda para inputs */
+    border-color: #0056b3; 
   }
   
   .login-button {
-    background-color: #007bff; /* Cor de fundo do botão de login */
-    color: #ffffff; /* Cor do texto do botão */
-    margin-top: 20px; /* Espaçamento superior para o botão */
+    background-color: #007bff; 
+    color: #ffffff; 
+    margin-top: 20px; 
   }
   
   .login-button:hover {
-    background-color: #0056b3; /* Cor de fundo do botão ao passar o mouse */
+    background-color: #0056b3; 
   }
   

@@ -3,8 +3,8 @@ const sql = require('mssql');
 const config = {
   user: 'sa',
   password: 'Sql202!s@',
-  server: '192.168.68.94\\sql2017',
-  database: 'gestao',
+  server: 'localhost\\sql2017',
+  database: 'InfoDevelop',
   port: 1433,
   options: {
     encrypt: false

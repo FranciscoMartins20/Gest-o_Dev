@@ -15,8 +15,8 @@ router.post('/login', function(req, res) {
 });
 
 router.post('/logout', usersController.logout);
-router.get('/me',verificarToken, usersController.getUtilizador);
-
-
+router.get('/me', verificarToken, usersController.getUtilizador);
+router.get('/user/:Username', usersController.getUtilizadorByUsername);
+router.get('/getall', usersController.getAllUtilizadores);
 
 module.exports = router;

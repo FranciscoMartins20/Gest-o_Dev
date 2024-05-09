@@ -1,43 +1,69 @@
 import React, { useState, useEffect } from 'react';
+import Select from 'react-select';
 import { useParams, useNavigate } from 'react-router-dom';
-import { updateTicket, fetchTicketDetails, deleteTicketID } from '../../service/api'; // Certifique-se de que as funções estão exportadas em api.js
+import { updateTicket, fetchTicketDetails, deleteTicketID, fetchAllCompanies, fetchAllUsers, fetchCompanyNameByNIF, fetchUserDetailsByUsername } from '../../service/api';
 import "./editicket.css";
 
 const EditTicket = () => {
     const { ticketId } = useParams();
     const navigate = useNavigate();
     const [ticket, setTicket] = useState({
-        data: '',
-        tempo: '',
-        empresa: '',
-        problema: '',
-        resolucao: '',
-        estado: '',
-        responsavel :''
+        Date: '',
+        Time: '',
+        Company: '',
+        Problem: '',
+        Resolution: '',
+        Status: '',
+        Responsible: ''
     });
+    const [companies, setCompanies] = useState([]);
+    const [users, setUsers] = useState([]);
 
     useEffect(() => {
         const loadTicketData = async () => {
             try {
                 const data = await fetchTicketDetails(ticketId);
-                setTicket(prevTicket => ({
-                    ...prevTicket,
-                    data: data.data ? data.data.split('T')[0] : '', // Ajuste da data
-                    tempo: data.tempo,
-                    empresa: data.empresa,
-                    problema: data.problema,
-                    resolucao: data.resolucao,
-                    estado: data.estado,
-                    responsavel: data.responsavel
-                }));
+                if (data) {
+                    setTicket({
+                        Date: data.Date ? data.Date.split('T')[0] : '',
+                        Time: data.Time || '',
+                        Company: data.Company || '',
+                        Problem: data.Problem || '',
+                        Resolution: data.Resolution || '',
+                        Status: data.Status || '',
+                        Responsible: data.Responsible || ''
+                    });
+                }
             } catch (error) {
                 console.error('Erro ao buscar o ticket:', error);
-                // Tratamento de erro adicional, como notificação ao usuário
             }
         };
 
         loadTicketData();
     }, [ticketId]);
+
+    useEffect(() => {
+        const fetchCompaniesAndUsers = async () => {
+            try {
+                const companiesData = await fetchAllCompanies();
+                setCompanies(companiesData);
+
+                const usersData = await fetchAllUsers();
+                setUsers(usersData);
+            } catch (error) {
+                console.error('Erro ao buscar empresas e usuários:', error);
+            }
+        };
+
+        fetchCompaniesAndUsers();
+    }, []);
+
+    const handleSelectChange = (name, selectedOption) => {
+        setTicket(prevTicket => ({
+            ...prevTicket,
+            [name]: selectedOption ? selectedOption.value : ''
+        }));
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -51,10 +77,9 @@ const EditTicket = () => {
         event.preventDefault();
         try {
             await updateTicket(ticketId, ticket);
-            navigate('/ticket'); // Redirecionar para a lista de tickets após a atualização
+            navigate('/ticket');
         } catch (error) {
             console.error('Erro ao atualizar o ticket:', error);
-            // Implementar tratamento de erro adequado, como exibição de mensagem de erro
         }
     };
 
@@ -62,28 +87,40 @@ const EditTicket = () => {
         const confirmDelete = window.confirm("Tem certeza que deseja excluir este ticket?");
         if (confirmDelete) {
             try {
-                await deleteTicketID(ticketId); // Chama a função para excluir o ticket
-                navigate('/ticket'); // Redireciona para a lista de tickets após a exclusão
+                await deleteTicketID(ticketId);
+                navigate('/ticket');
             } catch (error) {
                 console.error('Erro ao excluir o ticket:', error);
-                // Implementar tratamento de erro adequado, como exibição de mensagem de erro
             }
         }
     };
+
+    // Preparando opções para react-select
+    const companyOptions = companies.map(company => ({
+        value: company.NIF,
+        label: company.Name
+    }));
+    const userOptions = users.map(user => ({
+        value: user.Username,
+        label: user.Name
+    }));
+
+    // Encontrando opções selecionadas para react-select
+    const selectedCompany = companyOptions.find(option => option.value === ticket.Company);
+    const selectedUser = userOptions.find(option => option.value === ticket.Responsible);
 
     return (
         <div className="edit-ticket-page">
             <h1 className="edit-ticket-title">Editar Ticket</h1>
             <button onClick={handleDeleteTicket} className="delete-ticket-button">Excluir Ticket</button>
-            <br></br>
-            <br></br>
+            <br /><br />
             <form onSubmit={handleSubmit} className="edit-ticket-form">
                 <label>
                     Data:
                     <input
                         type="date"
-                        name="data"
-                        value={ticket.data}
+                        name="Date"
+                        value={ticket.Date}
                         onChange={handleChange}
                     />
                 </label>
@@ -91,62 +128,63 @@ const EditTicket = () => {
                     Tempo:
                     <input
                         type="time"
-                        name="tempo"
-                        value={ticket.tempo}
+                        name="Time"
+                        value={ticket.Time}
                         onChange={handleChange}
                     />
                 </label>
                 <label>
                     Empresa:
-                    <input
-                        type="text"
-                        name="empresa"
-                        value={ticket.empresa}
-                        onChange={handleChange}
+                    <Select
+                        name="Company"
+                        value={selectedCompany}
+                        options={companyOptions}
+                        onChange={(selected) => handleSelectChange('Company', selected)}
+                        placeholder="Selecione uma empresa"
+                        isClearable
                     />
                 </label>
                 <label>
                     Problema:
                     <textarea
-                        name="problema"
-                        value={ticket.problema}
+                        name="Problem"
+                        value={ticket.Problem}
                         onChange={handleChange}
                     />
                 </label>
                 <label>
                     Resolução:
                     <textarea
-                        name="resolucao"
-                        value={ticket.resolucao}
+                        name="Resolution"
+                        value={ticket.Resolution}
                         onChange={handleChange}
                     />
                 </label>
                 <label>
                     Estado:
                     <select
-                        name="estado"
-                        value={ticket.estado || ''}
+                        name="Status"
+                        value={ticket.Status || ''}
                         onChange={handleChange}
                     >
-                        <option value="Aberto">Aberto</option>
-                        <option value="Em progresso">Em Progresso</option>
-                        <option value="Resolvido">Resolvido</option>
+                        <option value="Pendente">Pendente</option>
+                        <option value="Em Progresso">Em Progresso</option>
+                        <option value="Finalizado">Finalizado</option>
                     </select>
                 </label>
                 <label>
                     Responsável:
-                    <select
-                        name="responsavel"
-                        value={ticket.responsavel}
-                        onChange={handleChange}
-                    >
-                        <option value="Francisco Martins">Francisco Martins</option>
-                        <option value="Clara Gomes">Clara Gomes</option>
-                    </select>
+                    <Select
+                        name="Responsible"
+                        value={selectedUser}
+                        options={userOptions}
+                        onChange={(selected) => handleSelectChange('Responsible', selected)}
+                        placeholder="Selecione um responsável"
+                        isClearable
+                    />
                 </label>
                 <button type="submit">Salvar Alterações</button>
             </form>
-            
         </div>
     );
 };
