@@ -81,7 +81,7 @@ const Sidebar = () => {
           {!isCollapsed && (
             <Box mb="25px">
               <Box display="flex" justifyContent="center" alignItems="center">
-                <img alt="profile-user" width="100px" height="100px" src={`../../assets/user_template.png`} style={{ borderRadius: "50%" }} />
+                <img alt="profile-user" width="150px" height="150px" src={`../../assets/User_Develop.png`} style={{ borderRadius: "50%" }} />
               </Box>
               <Box textAlign="center">
                 <Typography variant="h2" color={colors.grey[100]} fontWeight="bold" sx={{ m: "10px 0 0 0" }}>
