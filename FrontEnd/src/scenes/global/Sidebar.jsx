@@ -37,7 +37,7 @@ const Sidebar = () => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
-  const { logout, user } = useAuth(); // Destructure 'user' from the auth context
+  const { logout, user } = useAuth(); 
 
   return (
     <Box
