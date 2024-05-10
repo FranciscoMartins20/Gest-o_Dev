@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { fetchTickets, fetchCompanyNameByNIF,fetchUserDetailsByUsername } from '../../service/api';
+import { fetchTickets, fetchCompanyNameByNIF,fetchUserDetailsByUsername,fetchAllUsers } from '../../service/api';
 import './ticketpage.css';
 import ExcelJS from 'exceljs';
 import { useNavigate } from 'react-router-dom';
@@ -140,7 +140,9 @@ const TicketPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const [users, setUsers] = useState([]);
     const [filters, setFilters] = useState({
+        
         Company: '',
         Date: '',
         Month: '',
@@ -212,6 +214,20 @@ const TicketPage = () => {
         const { Month, Year, Responsible } = filters;
         exportToExcel(tickets, 'Lista_de_Tickets', Month, Year, Responsible);
     };
+    useEffect(() => {
+        const fetchCompaniesAndUsers = async () => {
+            try {
+              
+
+                const usersData = await fetchAllUsers();
+                setUsers(usersData);
+            } catch (error) {
+                console.error('Erro ao buscar empresas e usuários:', error);
+            }
+        };
+
+        fetchCompaniesAndUsers();
+    }, []);
 
     useEffect(() => {
         loadTickets();
@@ -274,9 +290,9 @@ const TicketPage = () => {
                     className="filter-input filter-responsible"
                 >
                     <option value="">Responsável</option>
-                    <option value="">Francisco Martins</option>
-                    <option value="">Clara Gomes</option>
-
+                    {users.map(user => (
+                        <option key={user.Username} value={user.Name}>{user.Name}</option>
+                    ))}
                 </select>
                 <button onClick={clearFilters} className="filter-clear-button">Limpar Filtros</button>
             </div>
