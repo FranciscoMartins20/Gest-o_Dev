@@ -1,0 +1,22 @@
+/* Estilos para o AppBar */
+.appBar.MuiAppBar-root {
+    background-color: #3498db;
+}
+
+/* Estilos para os botões dentro do AppBar */
+.topbarButton {
+    color: white; /* Cor do texto */
+}
+
+/* Estilos para o título (nome do usuário) */
+.topbarTitle {
+    font-weight: bold; /* Negrito para o título */
+    color: #FFF; /* Cor do texto */
+}
+
+.imagemTopbar {
+  width: 100px; /* Especifique a largura desejada */
+  height: auto; /* Mantenha a proporção original */
+}
+
+

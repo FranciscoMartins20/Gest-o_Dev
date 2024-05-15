@@ -10,19 +10,16 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Tickets');
 
-    // Configurações iniciais da planilha
-    worksheet.mergeCells('A1', 'G3');
-    const titleCell = worksheet.getCell('A1');
-    titleCell.value = 'InfoDevelop Tickets\nReport';
-    titleCell.font = { name: 'Calibri', size: 18, bold: true, color: { argb: 'FF6A8DAD' } };
-    titleCell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
-
-    // Adicionando uma imagem (logo)
+    // Adicionar uma imagem (logo) às células de A1 a G3
     const logo = workbook.addImage({
         base64: imagem_info,
-        extension: 'png',
+        extension: 'png'
     });
-    worksheet.addImage(logo, 'H1:I5');
+
+    worksheet.addImage(logo, {
+        tl: { col: 0.1, row: 0.1 }, // Configuração de posição superior esquerda
+        br: { col: 2, row: 4 } // Configuração de posição inferior direita
+    });
 
     worksheet.views = [{ showGridLines: false }];
 
@@ -39,10 +36,15 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
 
     worksheet.columns = headers.map(col => ({
         key: col.key,
-        width: col.width
+        width: col.width,
+        wrapText: col.key === 'Resolution' || col.key === 'Problem' 
     }));
 
-    // Criando a tabela de tickets
+    const formattedTickets = tickets.map(ticket => ({
+        ...ticket,
+        Date: new Date(ticket.Date).toLocaleDateString('pt-pt') // Formata a data para o formato desejado
+    }));
+
     const table = worksheet.addTable({
         name: 'TicketsTable',
         ref: 'A6',
@@ -56,7 +58,7 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
             name: header.name,
             filterButton: true
         })),
-        rows: tickets.map(ticket => headers.map(header => ticket[header.key]))
+        rows: formattedTickets.map(ticket => headers.map(header => ticket[header.key]))
     });
     table.commit();
 
@@ -91,7 +93,7 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
     }
 
     // Formatando a tabela de totais
-    const empresaRange = worksheet.getCell(`I${totalsStartRow}:I${totalsRowIndex - 1}`);
+    const empresaRange = worksheet.getCell(`I${totalsStartRow}`);
     empresaRange.border = {
         top: { style: 'thin' },
         left: { style: 'thin' },
@@ -99,10 +101,10 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
         right: { style: 'thin' }
     };
     empresaRange.alignment = { horizontal: 'center', vertical: 'middle' };
-    empresaRange.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD9EAD3' } };
+    empresaRange.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '3498db' } };
     empresaRange.font = { bold: true };
     
-    const totalHorasRange = worksheet.getCell(`J${totalsStartRow}:J${totalsRowIndex - 1}`);
+    const totalHorasRange = worksheet.getCell(`J${totalsStartRow}`);
     totalHorasRange.border = {
         top: { style: 'thin' },
         left: { style: 'thin' },
@@ -110,19 +112,24 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
         right: { style: 'thin' }
     };
     totalHorasRange.alignment = { horizontal: 'center', vertical: 'middle' };
-    totalHorasRange.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD9EAD3' } };
+    totalHorasRange.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '3498db' } };
     totalHorasRange.font = { bold: true };
     
-    // Ajustando larguras das colunas
+    // Ajustando larguras das colunas e habilitando quebra de texto
     worksheet.columns.forEach(column => {
-        let maxLength = 0;
-        column.eachCell({ includeEmpty: true }, cell => {
-            let cellLength = cell.value ? cell.value.toString().length : 0;
-            if (cellLength > maxLength) {
-                maxLength = cellLength;
-            }
-        });
-        column.width = maxLength < 10 ? 10 : maxLength + 2;
+        if (column.key === 'Resolution' || column.key === 'Problem') {
+            column.width = 30; // Tamanho fixo para as colunas de Comentários e Serviços
+            column.alignment = { wrapText: true }; // Habilitar quebra de texto
+        } else {
+            let maxLength = 0;
+            column.eachCell({ includeEmpty: true }, cell => {
+                let cellLength = cell.value ? cell.value.toString().length : 0;
+                if (cellLength > maxLength) {
+                    maxLength = cellLength;
+                }
+            });
+            column.width = maxLength < 10 ? 10 : maxLength + 2;
+        }
     });
 
     // Salvando o arquivo
@@ -130,7 +137,6 @@ const exportToExcel = async (tickets, fileName, month, year, responsible) => {
     const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     saveAs(blob, `${fileName}_${month}_${year}_${responsible}.xlsx`);
 };
-
 
 
 
